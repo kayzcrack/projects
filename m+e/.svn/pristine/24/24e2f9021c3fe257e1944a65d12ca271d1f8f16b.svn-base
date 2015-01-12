@@ -1,0 +1,137 @@
+-- Test addIndicatorClass
+
+Call addIndicatorClass('HIV','Human Immuno Virus');
+-- ----------------------------------------------
+-- Test addIndicator
+
+Call addIndicator('Number of people who test hiv+','nac','HIV');
+-- --------------------------------------------------------------------
+-- Test addFrequencyOfMeasure 
+
+Call addFrequencyOfMeasure('M', 'Monthly',now(),'');
+-- ---------------------------------------------------------------
+-- Test addMethodOfMeasurement
+
+Call addMethodOfMeasurement('Questionnaire');
+-- ---------------------------------------------------------------
+-- Test addUserRole
+
+Call addUserRole('TL','TeamLead');
+-- ----------------------------------------------------------------
+-- Test addUser
+
+Call addUser('password','Alex','Alexander','act','TL','Alec');
+-- -------------------------------------------------
+-- Test addPermissionType
+
+Call addPermissionType('MANT','Manage Team');
+-- ---------------------------------------------------------
+-- Test addPermission
+
+Call addPermission('MANT','TL');
+-- ----------------------------------------------------
+-- Test addTeam
+
+Call addTeam('C','Team C');
+-- ---------------------------------------------------
+-- Test addDataSource
+
+CALL addDataSource('TAB','Tablet');
+-- ----------------------------------------------
+-- Test addTeamMember
+
+Call addTeamMember('C','Tonia','TAB','Alex');
+-- --------------------------------------------------
+-- Test addFacilityType
+
+Call addFacilityType('SCH','School');
+-- ------------------------------------
+-- Test addFacilityService
+
+CAll addFacilityService('EDU','Educational Services');
+-- ----------------------------------------
+-- Test addAddress
+
+call addAddress('con','NGA','AB','1','01','Abuja','');
+-- -------------------------------------------------
+-- Test addFacility
+
+Call addFacility('HOS','Garki Hospital','act','MEDS','Dr','james@yahoo.com','9878','Chikwe','john','they','con','NGA','BA','1','01','Garki Hospital Abuja',''); -- retest
+-- ------------------------------------------------------
+-- Test addHumanRespondent
+
+Call addHumanRespondent('Jude','July','1991-03-16','F','S','con','NGA','AB','1','01','No 5 Central Area',''); -- retest
+-- ---------------------------
+-- Test addRespondent
+
+call addRespondent('girl',1,null);
+call addRespondent('boy',null,1);
+-- ---------------------------------
+-- Test addTeamRespondent
+
+Call addTeamRespondent('C',NOW(),'');
+-- --------------------------------------------------
+-- Test addFacilityContact
+
+call addFacilityContact('Mr','yahoo.com','987665768','jack','james','july');
+-- -----------------------------------------------
+-- Test addContinent
+
+call addContinent('TONIA','Tonia con'); 
+-- ---------------------------------------------
+-- Test addCountry
+
+call addCountry('T','Tonia country','TONIA');
+-- --------------------------------
+-- Test addLevelName
+
+Call addLevelName('T','STATE','LGA','WARD');
+-- ------------------------------------------
+-- Test addCountryZone
+
+call addCountryZone('T','N','NORTH');
+call addCountryZone('T','S','SOUTH');
+-- -----------------------------------------
+-- Test addAULevel1
+
+call addAULevel1('T','AN','ANTHONIA');
+-- -----------------------------------------------
+-- Test addAULevel2 
+
+call addAULevel2('T','AN','JUDE','ANN');
+-- ------------------------------------------------
+-- Test addAULevel3 
+
+call addAULevel3('T','AN','OKE','ANNA','OK');-- retest
+-- ------------------------------------------------
+-- Test addScheduleActiveIndicator
+
+call addScheduleActiveIndicator(1,'act',now(),'2014-05-05','D',1);-- retest
+-- ---------------------------------------------------------
+-- Test addMeasure
+
+call addMeasure(1,1,1,'Tonia','10 people were tested for malaria bt only 3 had malaria','C');-- retest
+-- ----------------------------------------
+-- Test addTeamAreaOfCoverage
+
+call addTeamAreaOfCoverage('A','01','NGA','AB','1',now(),'2014-06-01'); -- retest
+-- --------------------------------------
+-- Test Question
+
+call addQuestion(2,'num','act','How many people tested HIV positive?','Use pencils','Answer should be a number',1);-- retest
+
+-- ---------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,292 @@
+
+-- not working as expected
+-- CREATE OR REPLACE PROCEDURE generateSDINs(inStart INT, inCount INT)
+-- MODIFIES SQL DATA
+-- NO EXTERNAL ACTION
+-- BEGIN
+-- 	DECLARE X INT;
+-- 	DECLARE MAX INT;
+-- 	DECLARE @tmp INTEGER;
+-- 	SET MAX = inCount+inStart;
+-- 	SET X = inStart;
+-- 	WHILE X <= MAX DO 
+-- 		BEGIN
+-- 			SET @tmp = LPAD(X,3,'0');
+-- 			INSERT INTO SDINs(SDIN) VALUES (@tmp);
+-- 			SET X = X+1;
+-- 		END;
+-- 	END WHILE;
+-- END@
+
+-- ========================================
+CREATE OR REPLACE PROCEDURE LIST(IN in_Schema Varchar(32))
+READS SQL DATA
+LANGUAGE SQL
+BEGIN
+	DECLARE C1 CURSOR WITH RETURN TO CLIENT FOR 
+	SELECT ROUTINENAME,ROUTINESCHEMA,ROUTINETYPE FROM SYSCAT.ROUTINES
+	WHERE ROUTINESCHEMA = in_Schema;
+	OPEN C1;
+END@	
+-- ======================================================
+CREATE OR REPLACE PROCEDURE addGender(IN in_Sex CHAR(1), IN in_Desc VARCHAR(16))
+MODIFIES SQL DATA
+LANGUAGE SQL
+BEGIN
+	INSERT INTO Gender(Sex,Description)
+	VALUES(in_Sex, in_Desc);
+END@	
+-- =======================================================
+CREATE OR REPLACE PROCEDURE getGender()
+RESULT SET 1
+BEGIN
+	DECLARE gen CURSOR WITH RETURN TO CALLER FOR
+	SELECT Sex,Description
+	FROM Gender;
+	OPEN gen;
+END@
+-- =====================================================
+CREATE OR REPLACE PROCEDURE getMenu()
+RESULT SET 1
+BEGIN
+	DECLARE get_menu CURSOR WITH RETURN TO CALLER FOR
+	SELECT MenuID,Description FROM Menu;
+	OPEN get_menu;
+END@
+-- ===================================================
+CREATE OR REPLACE PROCEDURE addMenu(IN In_MenuID varchar(16),IN In_Description varchar(128))
+MODIFIES SQL DATA
+NO EXTERNAL ACTION
+BEGIN
+	INSERT INTO Menu(MenuID,Description)
+	VALUES(In_MenuID,In_Description);
+END@
+-- =================================================
+CREATE OR REPLACE PROCEDURE getMenuLink()
+RESULT SET 1
+BEGIN 
+	DECLARE get_link CURSOR WITH RETURN TO CALLER FOR
+	SELECT LinkID,Description,MenuID,Url FROM MenuLink;
+	OPEN get_link;
+END@
+-- ================================================
+CREATE OR REPLACE PROCEDURE addMenuLink(IN In_LinkID varchar(16),IN In_Description varchar(255),IN In_MenuID varchar(16),IN In_Url varchar(255))
+MODIFIES SQL DATA
+NO EXTERNAL ACTION
+BEGIN 
+	INSERT INTO MenuLink(LinkID,Description,MenuID,Url)
+	VALUES(In_LinkID,In_Description,In_MenuID,In_Url);
+END@
+-- =====================================================
+CREATE OR REPLACE PROCEDURE getSemester()
+RESULT SET 1
+BEGIN
+	DECLARE get_sem CURSOR WITH RETURN TO CALLER FOR
+	SELECT SemesterID,SemesterName,StartDate,EndDate
+	FROM Semester;
+	OPEN get_sem;
+END@
+-- ====================================================
+CREATE OR REPLACE PROCEDURE addSemester(IN In_SemesterID varchar(16),IN In_SemesterName varchar(32),IN In_StartDate Timestamp,IN In_EndDate Timestamp)
+MODIFIES SQL DATA
+NO EXTERNAL ACTION
+BEGIN 
+	INSERT INTO Semester(SemesterID,SemesterName,StartDate,EndDate)
+	VALUES(In_SemesterID,In_SemesterName,In_StartDate,In_EndDate);
+END@
+-- ===================================================
+CREATE OR REPLACE PROCEDURE getFaculty()
+RESULT SET 1
+BEGIN
+	DECLARE get_fac CURSOR WITH RETURN TO CALLER FOR
+	SELECT FacultyID,FacultyName,Description
+	FROM Faculty;
+	OPEN get_fac;
+END@
+-- =================================================
+CREATE OR REPLACE PROCEDURE addFaculty(IN In_FacultyID varchar(16),IN In_FacultyName varchar(128),IN In_Description varchar(128))
+MODIFIES SQL DATA
+NO EXTERNAL ACTION
+BEGIN 
+	INSERT INTO Faculty(FacultyID,FacultyName,Description)
+	VALUES(In_FacultyID,In_FacultyName,In_Description);
+-- ON DUPLICATE KEY UPDATE
+-- FacultyName = In_FacultyName, Description = In_Description;
+END@
+-- ===============================================
+CREATE OR REPLACE PROCEDURE getDepartment()
+RESULT SET 1
+BEGIN
+	DECLARE C1 CURSOR WITH RETURN TO CALLER FOR
+	SELECT DeptID,DeptName,FacultyID,Description FROM Department;
+	OPEN C1;
+END@
+-- =============================================
+CREATE OR REPLACE PROCEDURE addDepartment(IN In_DeptID varchar(16),IN In_DeptName varchar(128),IN In_FacultyID varchar(16),IN In_Description varchar(255))
+MODIFIES SQL DATA
+NO EXTERNAL ACTION
+BEGIN 
+	INSERT INTO Department(DeptID,DeptName,FacultyID,Description)
+	VALUES(In_DeptID,In_DeptName,In_FacultyID,In_Description);
+END@
+-- ============================================
+CREATE OR REPLACE PROCEDURE getLevel()
+BEGIN
+    DECLARE C1 CURSOR WITH RETURN TO CLIENT FOR
+	SELECT LevelID,LevelName FROM Level;
+	OPEN C1;
+END@
+-- ==========================================
+CREATE OR REPLACE PROCEDURE addLevel(IN In_LevelID varchar(16),IN In_LevelName varchar(16))
+BEGIN 
+	INSERT INTO Level(LevelID,LevelName)
+	VALUES(In_LevelID,In_LevelName);
+END@
+-- ========================================
+CREATE OR REPLACE PROCEDURE getSemester()
+BEGIN
+DECLARE C1 CURSOR WITH RETURN TO CLIENT FOR
+	SELECT SemesterID,SemesterName,StartDate,EndDate FROM Semester;
+	OPEN C1;
+END @
+-- =========================================
+CREATE OR REPLACE PROCEDURE addSemester(IN In_SemesterID varchar(16),IN In_SemesterName varchar(32),IN In_StartDate TIMESTAMP,IN In_EndDate TIMESTAMP)
+BEGIN 
+	INSERT INTO Semester(SemesterID,SemesterName,StartDate,EndDate)
+	VALUES(In_SemesterID,In_SemesterName,In_StartDate,In_EndDate);
+END@
+-- =========================================
+CREATE OR REPLACE PROCEDURE addCourse(IN In_CourseID varchar(16),IN In_CourseName varchar(128),IN In_CourseHours INT,IN In_LevelID Varchar(16),
+IN in_StaffID INT,IN in_SemesterID varchar(16),IN In_CourseDescription varchar(128))
+BEGIN 
+    call Get_Free_Staff(in_StaffID);
+	INSERT INTO Course(CourseID,CourseName,CourseHours,LevelID,StaffID,SemesterID,CourseDescription)
+	VALUES(In_CourseID,In_CourseName,In_CourseHours,In_LevelID,in_StaffID,in_SemesterID,In_CourseDescription);
+END @
+-- ========================================
+CREATE OR REPLACE PROCEDURE addStaff(IN In_SurName varchar(128),IN In_FirstName varchar(128),
+IN In_OtherNames varchar(128),IN In_Sex char(1),IN in_FacultyID varchar(16), IN in_DeptID varchar(16),
+IN In_Position varchar(32),IN In_Email varchar(32),IN in_Address varchar(255), IN in_Country varchar(32), IN in_State varchar(32), IN in_Lga varchar(32), IN in_Image BLOB)
+BEGIN 
+	-- SET @staffid = makeSTIN(in_SurName);
+	INSERT INTO Staff(SurName,FirstName,OtherNames,Sex,FacultyID,DeptID,Position,Email,Address,Country,State,Lga, Image)
+	VALUES(In_SurName,In_FirstName,In_OtherNames,In_Sex,in_FacultyID,in_DeptID,In_Position,In_Email,in_Address,in_Country,in_State,in_Lga, in_Image);
+END@
+-- =========================================
+CREATE OR REPLACE PROCEDURE getJob()
+BEGIN
+	DECLARE C1 CURSOR WITH RETURN TO CLIENT FOR
+	SELECT JobID,Name,Description FROM Job;
+	OPEN C1;
+END@
+-- ========================================
+CREATE OR REPLACE PROCEDURE addJob(IN in_JobID VARCHAR(32), IN in_Name Varchar(128), IN in_Desc Varchar(32))
+BEGIN
+	INSERT INTO Job(JobID, Name, Description)
+	VALUES(in_JobID, in_Name, in_Desc);
+END@
+-- =========================================
+-- to check if a staff handles more than two course
+CREATE OR REPLACE PROCEDURE Get_Free_Staff(IN in_StaffID anchor Staff.StaffID, IN in_SemesterID anchor Course.SemesterID)
+RESULT SET 1
+LANGUAGE SQL    
+BEGIN
+    DECLARE V_MAX anchor Staff.StaffID DEFAULT 0;
+    DECLARE V_STAFF VARCHAR(5000);
+    
+    /*cursor to to select all staffs from database*/
+    DECLARE C1 CURSOR WITH RETURN TO CALLER FOR
+    SELECT StaffID FROM Staff 
+    WHERE StaffID = in_StaffID;
+    
+    /*cursor to take count of a specific staff from the database*/
+    DECLARE C2 CURSOR WITH RETURN TO CALLER FOR
+    SELECT COUNT(StaffID) FROM Course
+    WHERE StaffID = in_StaffID AND SemesterID = in_SemesterID;
+    
+    OPEN C1;
+    
+    FETCH FROM C1 INTO V_STAFF;
+    /*checks if staff exists in the database else
+    signals an error.*/
+    IF V_STAFF IS NULL THEN
+    SIGNAL SQLSTATE '71001'
+    SET MESSAGE_TEXT = 'No Such Staff';
+    END IF;
+    CLOSE C1;
+    
+    
+    
+    OPEN C2;
+    
+    FETCH FROM C2 INTO V_MAX;
+    /* checks if lecturer is already handling two courses for the semester
+    and signals an error if lecturer is already assigned two courses.*/
+    IF V_MAX >= 2  THEN
+    SIGNAL SQLSTATE VALUE '91001'
+    SET MESSAGE_TEXT = 'Staff Cant Lecture More Than Two Courses';
+    END IF;
+    
+    CLOSE C2;
+    /*CALL DBMS_OUTPUT.PUT_LINE('RESULT=' || in_StaffID);*/
+END@
+
+-- ============================================
+CREATE OR REPLACE PROCEDURE checkStudentCourse(IN in_StudentID anchor Student.StudentID,IN in_CourseID anchor Course.CourseID,IN in_SemesterID anchor Semester.SemesterID)
+RESULT SET 1
+LANGUAGE SQL
+BEGIN
+    DECLARE X_LIMIT anchor Student.StudentID DEFAULT 0;
+    DECLARE Y_LIMIT anchor Student.StudentID DEFAULT 0;
+    
+    DECLARE max_cur CURSOR WITH RETURN TO CLIENT FOR
+    SELECT COUNT(StudentID),b.SemesterID FROM StudentSubject
+    left join course b on a.courseid = b.courseid
+    WHERE a.StudentID = in_StudentID and b.semesterid = in_SemesterID;
+    
+    DECLARE max_cur_1 CURSOR WITH RETURN TO CLIENT FOR
+    SELECT COUNT(CourseID) FROM StudentSubject 
+    WHERE StudentID = in_StudentID AND CourseID = in_CourseID;
+    
+
+    OPEN max_cur;
+    FETCH FROM max_cur INTO X_LIMIT;
+    IF X_LIMIT >= 8 THEN
+    SIGNAL SQLSTATE '71001'
+    SET MESSAGE_TEXT = 'Student Can Not Register More Than 8 Courses';
+    END IF;
+    CLOSE max_cur;
+    
+    OPEN max_cur_1;
+    FETCH FROM max_cur_1 INTO Y_LIMIT;
+    IF Y_LIMIT >= 1 THEN
+    SIGNAL SQLSTATE '71001'
+    SET MESSAGE_TEXT = 'Student Already Registered Course';
+    END IF;
+    CLOSE max_cur_1;
+END@   
+-- ==============================================  
+CREATE OR REPLACE PROCEDURE addStudentSubject(IN in_StudentID VARCHAR(16), IN in_CourseID VARCHAR(16),IN in_CreatedBy INT, IN in_ModifiedAt TIMESTAMP)
+BEGIN
+	
+					call checkStudentCourse(in_StudentID,in_CourseID,in_SemesterID);
+					INSERT INTO StudentSubject(StudentID, CourseID,CreatedBy,ModifiedAt)
+					VALUES (in_StudentID, in_CourseID,in_CreatedBy,in_ModifiedAt);
+	
+END@
+-- ==============================================
+-- db2 "insert into student(surname,firstname,othernames,sex,dob,facultyid,deptid,levelid,address,country,state,lga)
+-- values('oti','vincent','oden','M','2014-11-11','SCI','PHY','100','Abuja','Nigeria','FCT','Gwagwalada')"
+-- 
+--  
+CREATE OR REPLACE PROCEDURE checkStudentCourse_test(IN in_StudentID anchor Student.StudentID,IN in_CourseID anchor Course.CourseID)
+RESULT SET 1
+LANGUAGE SQL
+begin
+declare v_student anchor student.studentid;
+declare v_semester anchor semester.semesterid;
+declare v_course varchar(6000);
+select a.studentid,a.courseid,b.semesterid into v_student,v_course,v_semester
+from studentsubject a
+left join course b on a.courseid = b.courseid
+where semesterid = in_SemesterID

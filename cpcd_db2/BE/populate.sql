@@ -1,0 +1,187 @@
+-- Insert into Gender Table
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE Gender;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO Gender(Sex, Description) VALUES('f', 'Female');
+INSERT INTO Gender(Sex, Description) VALUES('m', 'Male');
+
+-- ----------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE Constant;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO Constant VALUES('MaxScoreForModule A',40);
+INSERT INTO Constant VALUES('MaxScoreForModule B',30);
+INSERT INTO Constant VALUES('MaxScoreForModule C',30);
+-- ----------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE Title;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO `Title` VALUES ('Alh','Alhaji'),('Bar','Barrister'),('BG','BRIG GEN'),
+('Chief','Chief'),('Dr','Dr'),('Eld','Elder'),('Engr','Engineer'),('Evang','Evangelist'),
+('Gen','General'),('Haj','Hajya'),('Hon','Honourable'),('LT','Leutenant'),('Maj','Major'),
+('Mal','Mallam'),('Miss','Miss'),('Mr','Mr'),
+('Mrs','Madamme'),('Ms','Madamme'),('Prof','Professor'),('Pst','Pastor'),('Rev','REV'),('Sen','Senator');
+-- ----------------------------------------------
+-- Insert into RelationshipTypeType
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE RelationshipType;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('aun','aunt');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('bil','brother-IN-law');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('bro','brother');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('bus','business partner');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('cou','cousin');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('dau','daughter');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('dil','daughter-IN-law');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('emp','employer');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('fil','father-IN-law');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('fri','friend');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('gda','grand daughter');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('gma','grand mother');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('gpa','grand father');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('gso','grand son');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('gua','guardian/benefactor');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('hus','husband');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('ma','mother');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('mil','mother-IN-law');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('nep','nephew');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('nie','niece');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('pa','father');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('sil','son-IN-law');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('sim','sister-IN-law');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('sis','sister');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('son','son');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('unc','uncle');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('wif','wife');
+INSERT INTO RelationshipType(RelationID,Description)  VALUES('zzz','others');
+
+
+-- ------------------------------------------------------
+-- Insert into Module
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE Module;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO Module(ModuleID,Description) VALUES ('A','Advanced Road etiauette:The driver and the road');
+INSERT INTO Module(ModuleID,Description) VALUES ('B','Nigeria Highway Code');
+INSERT INTO Module(ModuleID,Description) VALUES ('C','All in your hands');
+-- -----------------------------------------------------------------
+-- Insert into ModuleSubType
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE ModuleSubType;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('A','Defensive Driving Techiques','3.5','3.5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('A','Causes of road traffic crash, prevention and management','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('A','Journey management','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('A','Security/Executive Protection Driving Techniques','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('A','Safety guidelines on special driving conditions','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('A','Test of understanding(Scores)','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('B','Road signs and surface markings','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('B','Sharing the road with other users','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('B','Automobile fire handling and protection technique','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('B','Vehicle Maintenance','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('B','Tyre use management','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('B','Test of understanding(Scores)','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('C','Managing drivers health condition','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('C','Driver/Customer/Client relationship','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('C','Basic first aid management','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('C','Driver and the law','3,5','3,5');
+INSERT INTO ModuleSubType(ModuleID,Description,MaxTime,MaxScore) VALUES('C','Test of understanding(Scores)','3,5','3,5');
+
+-- -----------------------------------------------------------
+-- insert into Menu
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE Menu;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO Menu(MenuID,Description) VALUES('ad','User Management');
+INSERT INTO Menu(MenuID,Description) VALUES('rep','Report');
+INSERT INTO Menu(MenuID,Description) VALUES('ds','Driving School');
+INSERT INTO Menu(MenuID,Description) VALUES('mo','Monitoring');
+INSERT INTO Menu(MenuID,Description) VALUES('cert','Certificates');
+INSERT INTO Menu(MenuID,Description) VALUES('DO','Driver Offences');
+INSERT INTO Menu(MenuID,Description) VALUES('ins','Instructors');
+INSERT INTO Menu(MenuID,Description) VALUES('ld','Learner Driver');
+INSERT INTO Menu(MenuID,Description) VALUES('vio','DLC Verification');
+-- -------------------------------------------------------------------
+-- inserting into menulink
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE MenuLink;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO `MenuLink` VALUES ('ads','Assign TO Driving School','ins','#');
+INSERT INTO `MenuLink` VALUES ('ai','Assign Instructor','ds','#');
+INSERT INTO `MenuLink` VALUES('as','Assessment','ds','handle?action=mda');
+INSERT INTO `MenuLink` VALUES('cld','Completed Learner Drivers','vio','handle?action=dlc_view_ds');
+INSERT INTO `MenuLink` VALUES('dsc','Driving School Certificate','cert','#');
+INSERT INTO `MenuLink` VALUES('gor','Generate Offences report','DO','#');
+INSERT INTO `MenuLink` VALUES('ldc','Learner Driver Certificate','cert','#');
+INSERT INTO `MenuLink` VALUES('ma','Monthly Assessment','mo','#');
+INSERT INTO `MenuLink` VALUES('mdo','Manage','DO','#');
+INSERT INTO `MenuLink` VALUES('mds','Manage Driving School','ds','handle?action=mds');
+INSERT INTO `MenuLink` VALUES('mdsu','manage users','ad','handle?action=mdsu');
+INSERT INTO `MenuLink` VALUES('mfrsc','manage users','ad','handle?action=mfrscu');
+INSERT INTO `MenuLink` VALUES('mi','Manage Instructors','ins','#');
+INSERT INTO `MenuLink` VALUES('mld','Manage Learner Driver','ld','handle?action=mld');
+INSERT INTO `MenuLink` VALUES('or','Offences Report','rep','#');
+INSERT INTO `MenuLink` VALUES('pc','Print Certificate','ld','#');
+INSERT INTO `MenuLink` VALUES('re','Register Equipment','ds','#');
+INSERT INTO `MenuLink` VALUES('sr','Summary Report','rep','handle?action=vrdsr');
+INSERT INTO `MenuLink` VALUES('th','Training Hours','ld','#');
+INSERT INTO `MenuLink` VALUES('tr','Trainees Report','rep','handle?action=rldn');
+INSERT INTO `MenuLink` VALUES('vio','Verify Certificate','vio','handle?action=vldt');
+INSERT INTO `MenuLink` VALUES('viw','Registered Learner Drivers','vio','handle?action=dlc_view_reglds');
+INSERT INTO `MenuLink` VALUES('vld','Verify L.D Certificate','rep','#');
+INSERT INTO `MenuLink` VALUES('wr','Weekly Report','rep','#');
+
+-- ------------------------------------------------------------------
+-- insert into UserRole
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE UserRole;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO UserRole(RoleID,Name,Description) VALUES('Adm','Administrator','Admin');
+INSERT INTO UserRole(RoleID,Name,Description) VALUES('DI','Driving School Instructor','Instructor');
+INSERT INTO UserRole(RoleID,Name,Description) VALUES('DS','Driving School','Driving School');
+INSERT INTO UserRole(RoleID,Name,Description) VALUES('FRSC','Federal Road Safety Commission','FRSC');
+INSERT INTO UserRole(RoleID,Name,Description) VALUES('VIO','Vehicle Inspection Officer','VIO');
+-- ----------------------------------------------------------------------------------------
+-- inserting into permission
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE Permission;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO `Permission` VALUES('Adm','mfrsc','mfrsc');
+INSERT INTO `Permission` VALUES('DI','mld','mi');
+INSERT INTO `Permission` VALUES('DS','mdsu','re');
+INSERT INTO `Permission` VALUES('DS','mld','re');
+INSERT INTO `Permission` VALUES('FRSC','as','mfrsc');
+INSERT INTO `Permission` VALUES('FRSC','mds','mfrsc');
+INSERT INTO `Permission` VALUES('FRSC','sr','mfrsc');
+INSERT INTO `Permission` VALUES('FRSC','tr','mfrsc');
+INSERT INTO `Permission` VALUES('VIO','cld','vio');
+INSERT INTO `Permission` VALUES('VIO','vio','vio');
+INSERT INTO `Permission` VALUES('VIO','viw','vio');
+-- ------------------------------------------------------------------
+-- Insert into FRSCSectorCommand
+
+INSERT INTO FRSCSectorCommand(SectorCode,Name,Officer,EmailAddress,AddressLine1,AddressLIne2) VALUES('RS1.1','KADUNA SECTOR','Tonia','tonia@frsc.com','kaduna nigeria','');
+INSERT INTO FRSCSectorCommand(SectorCode,Name,Officer,EmailAddress,AddressLine1,AddressLIne2) VALUES('RS1.2','KANU SECTOR','Ammed','ammed@frsc.com','kanu nigeria','');
+INSERT INTO FRSCSectorCommand(SectorCode,Name,Officer,EmailAddress,AddressLine1,AddressLIne2) VALUES('RS1.3','ZAMFARA SECTOR','Aminu','aminu@frsc.com','Zamfara nigeria nigeria','');
+INSERT INTO FRSCSectorCommand(SectorCode,Name,Officer,EmailAddress,AddressLine1,AddressLIne2) VALUES('RS1.4','JIGAWA SECTOR','Aliyu','aliyu@frsc.com','jigawa nigeria','');
+
+-- ------------------------------------------------------------------------------------------
+
+
+
+

@@ -1,0 +1,18 @@
+delimiter // 
+drop trigger if exists ai_VideoRating//
+create trigger  ai_VideoRating after insert on VideoRating
+for each row
+begin
+      if new.VideoID in (select v.VideoID from Video v join VideoRating vr on v.VideoID = vr.VideoID) then
+	set @count = (select count(VideoID) from VideoRating where VideoID = new.VideoID);
+	set @rank = (select sum(Rank) from VideoRating where VideoID = new.VideoID);
+	set @current_rank = round((@rank/@count));
+
+	update Video
+	set Current_Rating = @current_rank
+	where VideoID = new.VideoID;
+
+      end if; 
+end //
+delimiter ;
+

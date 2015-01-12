@@ -1,0 +1,57 @@
+--  call addFaculty('SCI','Science','')@
+--  call addFaculty('EDU','Education','Faculty Of Education')@
+--  call addFaculty('NUR SCI','Nursing Science','Faculty Of Nursing Science')@
+--  call addFaculty('LAW','LAW','Faculty Of Law')@
+--  call addFaculty('MGT SCI','Management Science','Faculty Of Management Science')@
+--  call addFaculty('MED SCI','Medical Science','Faculty Of Medical Science')@
+-- -- ===========================================================
+-- call addDepartment('PHY','Physics','SCI','Department of physics')@
+--  call addDepartment('CHM','Chemistry','SCI','Department of Chemistry')@
+--  call addDepartment('BIO SCI','Biological Science','SCI','Department of Biological Science')@
+--  call addDepartment('GEN','Genetics and Biotech.','SCI','Department of Genetics and Biotech')@
+--  call addDepartment('BOT','Botany','SCI','Department of Botany')@
+ -- ============================================================
+-- call addLevel('100','Year One')@
+-- call addLevel('200','Year Two')@
+-- call addLevel('300','Year Three')@
+-- call addLevel('400','Year Four')@
+-- call addLevel('500','Year Five')@
+-- call addLevel('600','Year Six')@
+-- 
+-- -- ============================================================
+-- call addSemester('First','First Semester',CURRENT TIMESTAMP,null)@
+-- call addSemester('Second','Second Semester',CURRENT TIMESTAMP,null)@
+-- call addSemester('Third','Third Semester',CURRENT TIMESTAMP,null)@
+-- -- ===============================================
+-- call addJob('HOD','HEAD OF DEPARTMENT',NULL)@
+-- call addJob('DEAN','DEAN OF FACULTY',NULL)@
+-- call addJob('FOF','FACULTY OFFICER',NULL)@
+-- call addJob('EOF','EXAM OFFICER',NULL)@
+-- call addJob('LAB','LAB ATTENDANT',NULL)@
+-- ==================================================
+-- call addGender('M','Male')@
+-- call addGender('F','Female')@
+-- -- ==================================================
+-- call addStaff('Oti','Vincent','Oden','M','SCI','BOT','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Nkanu','John','Edu','M','LAW','GEN','DEAN','Boi_1DA@yahoo.com','Calabar Nigeria','Nigeria','Cross River','Abi',null)@
+-- call addStaff('Inyang','Samuel','Unoh','M','SCI','CHM','HOD','toma1@yahoo.com','Akwa Ibom Nigeria','Nigeria','Akwa Ibom','Anang',null)@
+-- call addStaff('Nku','Mark','Oje','M','MGT SCI','GEN','FOF','njitap@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Unah','Samuel','Obim','M','SCI','BOT','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Ufan','Grace','Oba','F','SCI','CHM','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Kayang','Kayang','Urim','M','SCI','BOT','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Ururu','Joel','Ururu','M','SCI','PHY','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Mac-Utah','Tony','Nash','M','SCI','BOT','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+-- call addStaff('Andepu','Peter','Andepu','M','SCI','GEN','HOD','kayzcrack1@yahoo.com','Abuja Nigeria','Nigeria','Cross River','Obanliku',null)@
+
+-- =================================================
+-- call addStudentSubject(1,'bio1111',null,null)@
+-- call addStudentSubject(1,'bio1112',null,null)@
+-- call addStudentSubject(1,'gss1011',null,null)@
+-- call addStudentSubject(1,'gss1012',null,null)@
+-- call addStudentSubject(1,'math1111',null,null)@
+-- call addStudentSubject(1,'math1112',null,null)@
+-- call addStudentSubject(1,'phy1111',null,null)@
+-- call addStudentSubject(1,'phy1112',null,null)@
+call addStudentSubject(1,'chm1011',null,null)@
+
+-- ============================================

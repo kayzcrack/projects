@@ -1,0 +1,556 @@
+
+/*
+ ***M and E TABLE SCRIPTS***
+ AUTHOR: Onyemelukwe Afoma
+ 16/8/11
+*/
+
+-- Changelog
+-- Afoma 12/02/2012 removed facility address and human address tables
+-- added teamareaofcoverage,selector tables
+
+
+DROP DATABASE IF EXISTS mande;
+
+CREATE DATABASE mande;
+
+USE mande;
+
+-- ----------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS MethodOfMeasurement;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE MethodOfMeasurement(
+	MethodMeasureID INT AUTO_INCREMENT NOT NULL,
+	Description VARCHAR (32),
+	PRIMARY KEY(MethodMeasureID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS QuestionStatus;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE QuestionStatus(
+	StatusID CHAR(3) NOT NULL,
+	Description VARCHAR (16) NOT NULL,
+	PRIMARY KEY(StatusID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS UserStatus;
+SET FOREIGN_KEY_CHECKS  = 0;
+CREATE TABLE UserStatus(
+UserStatusID Char(3) NOT NULL,
+Description Varchar(16) NOT NULL,
+PRIMARY KEY(UserStatusID))ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS ResultType;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE ResultType(
+	TypeID CHAR(3) NOT NULL,
+	Description VARCHAR (32) NOT NULL,
+	PRIMARY KEY(TypeID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS IndicatorStatus;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE IndicatorStatus(
+	StatusID	CHAR(3),
+	Description	VARCHAR(16) NOT NULL,
+	PRIMARY KEY(StatusID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Title;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Title(
+TitleID Varchar(16) NOT NULL,
+Description Varchar(64) NOT NULL,
+PRIMARY KEY(TitleID))ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Selector;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Selector(
+SelectorID INT AUTO_INCREMENT NOT NULL,
+Description Varchar(64) NOT NULL,
+ PRIMARY KEY(SelectorID))ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS IndicatorClass;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE IndicatorClass(
+	IndicatorClassID VARCHAR(16) NOT NULL,
+	Description	VARCHAR(255) NOT NULL,
+	PRIMARY KEY(IndicatorClassID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS `Indicator`;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE `Indicator`(
+	IndicatorID INT AUTO_INCREMENT NOT NULL,
+	`Name`	VARCHAR(255),
+	StatusID CHAR(3),
+	IndicatorClassID VARCHAR(16),
+	PRIMARY KEY(IndicatorID),
+	FOREIGN KEY (StatusID) REFERENCES IndicatorStatus(StatusID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (IndicatorClassID) REFERENCES IndicatorClass(IndicatorClassID)ON UPDATE CASCADE ON DELETE NO ACTION
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Question;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Question(
+	QuestionID INT AUTO_INCREMENT NOT NULL,
+	IndicatorID INT NOT NULL,
+	TypeID CHAR(3),
+	StatusID CHAR(3),
+	Question VARCHAR(255) NOT NULL,
+	Instructions VARCHAR(255),
+	HINT VARCHAR(255),
+	SelectorID INT NOT NULL,
+	PRIMARY KEY(QuestionID),
+	FOREIGN KEY (IndicatorID) REFERENCES Indicator(IndicatorID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (TypeID) REFERENCES ResultType(TypeID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (StatusID) REFERENCES QuestionStatus(StatusID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (SelectorID) REFERENCES Selector(SelectorID)ON UPDATE CASCADE ON DELETE NO ACTION
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS FrequencyOfMeasure;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE FrequencyOfMeasure(
+	FrequencyID	CHAR(3),
+	Description	VARCHAR(32) NOT NULL,
+	EffectiveStartDATE	DATE NOT NULL,
+	EffectiveEndDATE	DATE,
+	PRIMARY KEY(FrequencyID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------------
+
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS ScheduleActiveStatus;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE ScheduleActiveStatus(
+	StatusID	CHAR(3),
+	Description	VARCHAR(16) NOT NULL,
+	PRIMARY KEY(StatusID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS FacilityService;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE FacilityService(
+	ServiceTypeID	CHAR(3),
+    `Name`	VARCHAR(64),
+	PRIMARY KEY(ServiceTypeID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS FacilityStatus;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE FacilityStatus(
+	FacilityStatusID	CHAR(3),
+	Description	VARCHAR(16) NOT NULL,
+	PRIMARY KEY(FacilityStatusID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS FacilityType;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE FacilityType(
+	FacilityTypeID	CHAR(3),
+       `Description`	VARCHAR(64) NOT NULL,
+	PRIMARY KEY(FacilityTypeID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Team;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Team(
+	TeamID	VARCHAR(16),
+    Description	VARCHAR(64) NOT NULL,
+	DateFormed TIMESTAMP NOT NULL,
+	PRIMARY KEY(TeamID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS MaritalStatus;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE MaritalStatus(
+	MaritalID	CHAR(1),
+    Description	VARCHAR(64) NOT NULL,
+	PRIMARY KEY(MaritalID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Gender;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Gender(
+	Sex	CHAR(1),
+       `Description`	VARCHAR(6) NOT NULL,
+	PRIMARY KEY(Sex)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS DataSource;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE DataSource(
+	SourceID VARCHAR(16),
+    `Description`	VARCHAR(64) NOT NULL,
+	PRIMARY KEY(SourceID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS UserRole;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE UserRole(
+	RoleID VARCHAR(5) NOT NULL,
+    `Description` VARCHAR(64) NOT NULL,
+	PRIMARY KEY(RoleID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS PermissionType;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE PermissionType(
+	PermissionID VARCHAR(5) NOT NULL,
+       `Description`	VARCHAR(64) NOT NULL,
+	PRIMARY KEY(PermissionID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AddressType;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AddressType(
+	AddressTypeID VARCHAR(5) NOT NULL,
+       `Description`	VARCHAR(16) NOT NULL,
+	PRIMARY KEY(AddressTypeID)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Continent;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Continent(
+ContinentCode Char(5) NOT NULL,
+Name Varchar(16) NOT NULL,
+PRIMARY KEY(ContinentCode))ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- --------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Country;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Country(
+	CountryCode CHAR(3),
+       `Name`	VARCHAR(64) NOT NULL,
+	ContinentCode CHAR(5),
+	PRIMARY KEY(CountryCode)
+	)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Zone;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Zone(
+	CountryCode CHAR(3),
+       `ZoneCode`	VARCHAR(5) NOT NULL,
+	Description	VARCHAR(64),
+	PRIMARY KEY(ZoneCode),
+	FOREIGN KEY (CountryCode) REFERENCES Country(CountryCode)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS LevelName;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE LevelName(
+	CountryCode CHAR(3),
+    Level1name	VARCHAR(64),
+	Level2name	VARCHAR(64),
+	Level3name	VARCHAR(64),
+	PRIMARY KEY(CountryCode),
+	FOREIGN KEY (CountryCode) REFERENCES Country(CountryCode)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AULevel1;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AULevel1(
+CountryCode Char(3) NOT NULL,
+AULevel1ID varchar(5) NOT NULL,
+Name varchar(100) NOT NULL,
+PRIMARY KEY(CountryCode,AULevel1ID),
+FOREIGN KEY(CountryCode) REFERENCES Country(CountryCode) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- =====================================================================
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AULevel2;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AULevel2 (
+CountryCode char(3) NOT NULL,
+AULevel1ID varchar(5) NOT NULL,
+Name varchar(100) NOT NULL,
+AULevel2ID varchar(5) NOT NULL,
+PRIMARY KEY (CountryCode, AULevel1ID, AULevel2ID),
+CONSTRAINT FK_AULevel2_AULevel1ID FOREIGN KEY (CountryCode, AULevel1ID) REFERENCES AULevel1 (CountryCode, AULevel1ID) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+ 
+-- ====================================================================
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AULevel3;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AULevel3(
+CountryCode Char(3) NOT NULL,
+AULevel1ID Varchar(5) NOT NULL,
+Name Varchar(100) NOT NULL,
+AULevel2ID Varchar(5) NOT NULL,
+AULevel3ID Varchar(5) NOT NULL,
+CONSTRAINT PK_AULevel3 PRIMARY KEY(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID),
+CONSTRAINT FK_AULevel3 FOREIGN KEY(CountryCode,AULevel1ID,AULevel2ID) REFERENCES AULevel2(CountryCode,AULevel1ID,AULevel2ID) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ------------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS ScheduledActiveIndicator;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE ScheduledActiveIndicator(
+	ScheduleID	INT AUTO_INCREMENT NOT NULL,
+	QuestionID	INT,
+	StatusID	CHAR(3),
+	StartDATE	DATE NOT NULL,
+	EndDATE	DATE NOT NULL,
+	FrequencyID	CHAR(3),
+	MethodMeasureID	INT,
+	PRIMARY KEY(ScheduleID,QuestionID),
+	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (StatusID) REFERENCES ScheduleActiveStatus(StatusID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (FrequencyID) REFERENCES FrequencyOfMeasure(FrequencyID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (MethodMeasureID) REFERENCES MethodOfMeasurement(MethodMeasureID)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Facility;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Facility(
+FacilityID INT AUTO_INCREMENT not null,
+FacilityTypeID Char(3) NOT NULL,
+Name Varchar(64) NOT NULL,
+FacilityStatusID Char(3) NOT NULL,
+ServiceTypeID Char(3) NOT NULL,
+PRIMARY KEY(FacilityID),
+FOREIGN KEY(FacilityTypeID) REFERENCES FacilityType(FacilityTypeID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(FacilityStatusID) REFERENCES FacilityStatus(FacilityStatusID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(ServiceTypeID) REFERENCES FacilityService(ServiceTypeID) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS HumanRespondent;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE HumanRespondent(
+	HumanID	INT AUTO_INCREMENT NOT NULL,
+	Surname	VARCHAR(32),
+	OtherNames	VARCHAR(32),
+	DateOfBirth	DATE,
+	Sex	CHAR(1),
+	MaritalID CHAR(1),
+	PRIMARY KEY(HumanID),
+	FOREIGN KEY (Sex) REFERENCES Gender(Sex)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (MaritalID) REFERENCES MaritalStatus(MaritalID)ON UPDATE CASCADE ON DELETE NO ACTION)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Respondent;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Respondent(
+	RespondentID INT AUTO_INCREMENT NOT NULL,
+	DateVisited TIMESTAMP NOT NULL,
+	Description Varchar(255) NOT NULL,
+	FacilityID INT,
+	HumanID INT,
+PRIMARY KEY(RespondentID, DateVisited),
+FOREIGN KEY(HumanID) REFERENCES HumanRespondent(HumanID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(FacilityID) REFERENCES Facility(FacilityID) ON DELETE NO ACTION ON UPDATE CASCADE
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS TeamRespondent;
+SET FOREIGN_KEY_CHECKS  = 1;
+
+CREATE TABLE TeamRespondent(
+TeamResID INT AUTO_INCREMENT NOT NULL,
+DateVisited TIMESTAMP NOT NULL,
+RespondentID INT NOT NULL,
+TeamID Varchar(16) NOT NULL,
+StartDate DATETIME,
+EndDate DATETIME,
+PRIMARY KEY(TeamResID),
+FOREIGN KEY(RespondentID,DateVisited) REFERENCES Respondent(RespondentID,DateVisited) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(TeamID) REFERENCES Team(TeamID) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS FacilityContact;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE FacilityContact(
+ContactID INT AUTO_INCREMENT NOT NULL,
+FacilityID INT NOT NULL,
+TitleID Varchar(16),
+ContactEmail Varchar(32),
+PhoneNumber Varchar(32) NOT NULL,
+SurName Varchar(32) NOT NULL,
+FirstName Varchar(32) NOT NULL,
+MiddleName Varchar(32),
+PRIMARY KEY (ContactID,FacilityID),
+FOREIGN KEY(FacilityID) REFERENCES Facility(FacilityID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(TitleID) REFERENCES Title(TitleID) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS `User`;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE `User`(
+	`password`	VARCHAR(255),
+	Username	VARCHAR(16),
+	FirstName	VARCHAR(32),
+	UserStatusID CHAR(3) DEFAULT 'act'
+,	RoleID	VARCHAR(5),
+	Surname	VARCHAR(32) NOT NULL,
+	PRIMARY KEY(Username),
+	FOREIGN KEY (RoleID) REFERENCES `UserRole`(RoleID)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS TeamMember;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE TeamMember(
+	TeamID	VARCHAR(16) NOT NULL,
+	Username VARCHAR(16) NOT NULL,
+	SourceID VARCHAR(16) NOT NULL,
+	TeamLead VARCHAR(16) NOT NULL,
+	PRIMARY KEY(TeamID,Username),
+	FOREIGN KEY (TeamID) REFERENCES Team(TeamID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (SourceID) REFERENCES DataSource(SourceID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (Username) REFERENCES `User`(Username)ON UPDATE CASCADE ON DELETE NO ACTION)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Permission;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Permission(
+	PermissionID	VARCHAR(5),
+	RoleID	VARCHAR(5),
+	PRIMARY KEY(PermissionID,RoleID),
+	FOREIGN KEY (PermissionID) REFERENCES PermissionType(PermissionID)ON UPDATE CASCADE ON DELETE NO ACTION,
+	FOREIGN KEY (RoleID) REFERENCES `UserRole`(RoleID)ON UPDATE CASCADE ON DELETE NO ACTION)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AULevel1;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AULevel1(
+	CountryCode	CHAR(3),
+	AULevel1ID	VARCHAR(5),
+	`Name` VARCHAR(32)  NOT NULL,
+	PRIMARY KEY(CountryCode,AULevel1ID),
+	FOREIGN KEY (CountryCode) REFERENCES Country(CountryCode)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AULevel2;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AULevel2(
+	CountryCode	CHAR(3),
+	AULevel1ID	VARCHAR(5),
+	`Name` VARCHAR(32)  NOT NULL,
+	AULevel2ID	VARCHAR(5),
+	PRIMARY KEY(CountryCode,AULevel1ID,AULevel2ID),
+	FOREIGN KEY (CountryCode,AULevel1ID) REFERENCES AULevel1(CountryCode,AULevel1ID)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------------------------------
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS AULevel3;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE AULevel3(
+	CountryCode	CHAR(3),
+	AULevel1ID	VARCHAR(5),
+	`Name` VARCHAR(32)  NOT NULL,
+	AULevel2ID	VARCHAR(5),
+	AULevel3ID	VARCHAR(5),
+	PRIMARY KEY(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID),
+	FOREIGN KEY (CountryCode,AULevel1ID,AULevel2ID) REFERENCES AULevel2(CountryCode,AULevel1ID,AULevel2ID)ON UPDATE CASCADE ON DELETE NO ACTION
+         )ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------------------------------
+
+
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Address;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Address(
+AddressID INT Auto_Increment,
+AddressTypeID Varchar(5) NOT NULL,
+CountryCode Char(3) NOT NULL,
+AULevel1ID Varchar(5) NOT NULL,
+AULevel2ID Varchar(5) NOT NULL,
+AULevel3ID Varchar(5) NOT NULL,
+RespondentID INT NOT NULL,
+DateVisited TIMESTAMP NOT NULL,
+Addressline1 Varchar(255) NOT NULL,
+Addressline2 Varchar(255),
+PRIMARY KEY(AddressID),
+FOREIGN KEY(AddressTypeID) REFERENCES AddressType(AddressTypeID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID) REFERENCES AULevel3(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(RespondentID,DateVisited) REFERENCES Respondent(RespondentID,DateVisited) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ----------------------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS TeamAreaOfCoverage;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE TeamAreaOfCoverage(
+AreaID INT AUTO_INCREMENT NOT NULL,
+TeamID Varchar(16) NOT NULL,
+AULevel3ID Varchar(5) NOT NULL,
+CountryCode Char(3) NOT NULL,
+AULevel1ID Varchar(5) NOT NULL,
+AULevel2ID Varchar(5) NOT NULL,
+StartDate DATETIME NOT NULL,
+EndDate DATETIME NOT NULL,
+PRIMARY KEY(AreaID),
+FOREIGN KEY(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID) REFERENCES AULevel3(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID) ON DELETE NO ACTION ON UPDATE CASCADE,
+FOREIGN KEY(TeamID) REFERENCES Team(TeamID) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;
+-- ---------------------------------------
+SET FOREIGN_KEY_CHECKS  = 0;
+DROP TABLE IF EXISTS Measure;
+SET FOREIGN_KEY_CHECKS  = 1;
+CREATE TABLE Measure(
+MeasureID INT AUTO_INCREMENT NOT NULL,
+ScheduleID INT NOT NULL,
+QuestionID INT NOT NULL,
+CollectedOn Timestamp NOT NULL,
+TeamResID INT,
+Answer Varchar(255) NOT NULL,
+TeamID	VARCHAR(16) NOT NULL,
+Username VARCHAR(16) NOT NULL,
+PRIMARY KEY(MeasureID,ScheduleID,QuestionID),
+ FOREIGN KEY(ScheduleID,QuestionID) REFERENCES ScheduledActiveIndicator(ScheduleID,QuestionID) ON DELETE NO ACTION ON UPDATE CASCADE,
+ FOREIGN KEY(TeamResID) REFERENCES TeamRespondent(TeamResID) ON DELETE NO ACTION ON UPDATE CASCADE,
+ FOREIGN KEY(TeamID,Username) REFERENCES TeamMember(TeamID,Username) ON DELETE NO ACTION ON UPDATE CASCADE)ENGINE=INNODB DEFAULT CHARSET=utf8;

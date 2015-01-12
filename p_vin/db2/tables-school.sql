@@ -1,0 +1,335 @@
+-- SET TERMINATOR ;
+-- voti@quanteq.com
+-- db2 -td\; -xvf table-school.sql
+
+-- set schema = school;
+
+/*Stores identification numbers for Staffs*/
+DROP TABLE STINs;
+CREATE TABLE STINs(
+	STIN CHAR(9) NOT NULL,
+	DateUsed TIMESTAMP NULL,
+	CONSTRAINT pk_STINs PRIMARY KEY(STIN)
+);
+
+
+/*Stores identification numbers for Students*/
+DROP TABLE SDINs;
+CREATE TABLE SDINs(
+	SDIN BIGINT NOT NULL,
+	DateUsed TIMESTAMP NULL,
+	CONSTRAINT pk_SDINs PRIMARY KEY(SDIN)
+);
+
+
+DROP TABLE Job;
+CREATE TABLE Job(
+	JobID Varchar(32) NOT NULL,
+	Name Varchar(64) NOT NULL,
+	Description Varchar(128),
+	CONSTRAINT pk_job PRIMARY KEY(JobID)
+	);
+
+
+DROP TABLE Menu;
+CREATE TABLE Menu(
+	MenuID Varchar(16) NOT NULL,
+	Description Varchar(128),
+	CONSTRAINT pk_Menu PRIMARY KEY(MenuID)
+	);
+	
+
+DROP TABLE UserRole;
+CREATE TABLE UserRole(
+	RoleID Varchar(16) NOT NULL,
+	Name Varchar(128) NOT NULL,
+	Description Varchar(32),
+	CONSTRAINT pk_UserRole PRIMARY KEY(RoleID)
+	);
+		
+
+DROP TABLE Gender;
+CREATE TABLE Gender(
+	Sex Char(1) NOT NULL,
+	Description Varchar (16),
+	CONSTRAINT pk_Gender PRIMARY KEY(Sex)
+	);
+	
+	
+ 
+DROP TABLE Faculty;
+CREATE TABLE Faculty(
+	FacultyID Varchar(16) NOT NULL,
+	FacultyName Varchar(128) NOT NULL,
+	Description Varchar(128),
+	CONSTRAINT pk_Faculty PRIMARY KEY(FacultyID)
+	);
+	
+
+
+DROP TABLE Semester;
+CREATE TABLE Semester(
+	SemesterID Varchar(16) NOT NULL,
+	SemesterName Varchar(32) NOT NULL,
+	StartDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	EndDate TIMESTAMP,
+	CONSTRAINT pk_Semester PRIMARY KEY(SemesterID)
+	); 
+	
+
+
+DROP TABLE Department; 
+CREATE TABLE Department(
+	DeptID Varchar(16) NOT NULL,
+	DeptName Varchar(128) NOT NULL,
+	FacultyID Varchar(16) NOT NULL,
+	Description Varchar(255),
+	CONSTRAINT pk_Department PRIMARY KEY(DeptID),
+	CONSTRAINT fk_Department_Faculty FOREIGN KEY(FacultyID) REFERENCES Faculty(FacultyID)
+	);
+	
+
+DROP TABLE Level;
+CREATE TABLE Level(
+	LevelID Varchar(16) NOT NULL,
+	LevelName Varchar(128) NOT NULL,
+	CONSTRAINT pk_Level PRIMARY KEY(LevelID)
+	);
+
+
+DROP TABLE Staff;
+CREATE TABLE Staff(
+	StaffID INTEGER  NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 0001 INCREMENT BY 1),
+	SurName Varchar(128) NOT NULL,
+	FirstName Varchar(128) NOT NULL,
+	OtherNames Varchar(128),
+	Sex Char(1) NOT NULL,
+	FacultyID Varchar(16),
+	DeptID Varchar(16),
+	Position Varchar(32),
+	Email Varchar(32),
+	Address Varchar(255) NOT NULL,
+	Country Varchar(32) NOT NULL,
+	State Varchar(32) NOT NULL,
+	LGA Varchar(32),
+	Image BLOB,
+	sys_start Timestamp(12) generated always as row begin not null implicitly hidden,
+	sys_end TIMESTAMP(12) generated always as row end  not null implicitly hidden,
+	trans_start timestamp(12) generated always as transaction start id implicitly hidden,
+	period system_time(sys_start,sys_end),
+	CONSTRAINT pk_Staff PRIMARY KEY(StaffID),
+	CONSTRAINT fk_Staff_Gender FOREIGN KEY(Sex) REFERENCES Gender(Sex),
+	CONSTRAINT fk_Staff_Faculty FOREIGN KEY(FacultyID) REFERENCES Faculty(FacultyID),
+	CONSTRAINT fk_Staff_Department FOREIGN KEY(DeptID) REFERENCES Department(DeptID),
+	CONSTRAINT fk_Staff_Job FOREIGN KEY(Position) REFERENCES Job(JobID)
+	);
+-- DROP TABLE Staff_History;
+CREATE TABLE Staff_History LIKE Staff;
+ALTER TABLE Staff_History APPEND ON;
+ALTER TABLE Staff ADD VERSIONING USE HISTORY TABLE Staff_History;
+	
+
+DROP TABLE Course;
+CREATE TABLE Course(
+	CourseID Varchar(16) NOT NULL,
+	CourseName Varchar(128) NOT NULL,
+	CourseHours INTEGER ,
+	LevelID Varchar(16) NOT NULL,
+	SemesterID Varchar(16) NOT NULL,
+	StaffID INTEGER NOT NULL,
+	CourseDescription Varchar(128),
+	CONSTRAINT pk_Course PRIMARY KEY(CourseID),
+	CONSTRAINT fk_Course_Level FOREIGN KEY(LevelID) REFERENCES Level(LevelID),
+	CONSTRAINT fk_Course_Semester FOREIGN KEY(SemesterID) REFERENCES Semester(SemesterID),
+	CONSTRAINT fk_Course_Staff FOREIGN KEY(StaffID) REFERENCES Staff(StaffID)
+	);
+
+DROP TABLE Student;
+CREATE TABLE Student(
+	StudentID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 0001 INCREMENT BY 1),
+	SurName Varchar(128) NOT NULL,
+	FirstName Varchar(128) NOT NULL,
+	OtherNames Varchar(128),
+	Sex Char(1) NOT NULL,
+	DOB Date,
+	FacultyID Varchar(16),
+	DeptID Varchar(16) NOT NULL,
+	LevelID Varchar(16) NOT NULL,
+	Address Varchar(255) NOT NULL,
+	Country Varchar(32) NOT NULL,
+	State Varchar(32) NOT NULL,
+	LGA Varchar(32),
+	Image BLOB,
+	createdBy INTEGER IMPLICITLY HIDDEN,
+	modifiedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP IMPLICITLY HIDDEN,
+	Sys_start Timestamp(12) Generated Always As Row Begin Not Null Implicitly Hidden,
+	Sys_end Timestamp(12) Generated Always As Row End Not Null Implicitly Hidden,
+	trans_start timestamp(12) generated always as transaction start id implicitly hidden,
+	period system_time(sys_start,sys_end),
+	CONSTRAINT pk_Student PRIMARY KEY(StudentID),
+	CONSTRAINT fk_Student_Faculty FOREIGN KEY(FacultyID) REFERENCES Faculty(FacultyID), 
+	CONSTRAINT fk_Student_Gender FOREIGN KEY(Sex) REFERENCES Gender(Sex),
+	CONSTRAINT fk_Student_Level FOREIGN KEY(LevelID) REFERENCES Level(LevelID),
+	CONSTRAINT fk_Student_Department FOREIGN KEY(DeptID) REFERENCES Department(DeptID)
+	);
+
+-- DROP TABLE Student_History;
+CREATE TABLE Student_History LIKE Student;
+ALTER TABLE Student_History APPEND ON;
+ALTER TABLE Student ADD VERSIONING USE HISTORY TABLE Student_History;
+	
+	
+DROP TABLE StudentSubject;
+CREATE TABLE StudentSubject(
+	StudentSubjectID INTEGER  NOT NULL GENERATED ALWAYS AS IDENTITY,
+	StudentID INTEGER,
+	CourseID Varchar(16) NOT NULL,
+	createdBy INTEGER IMPLICITLY HIDDEN,
+	modifiedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP IMPLICITLY HIDDEN,
+	CONSTRAINT pk_StudentSubject PRIMARY KEY(StudentSubjectID),
+	CONSTRAINT fk_StudentSubject_Student FOREIGN KEY(StudentID) REFERENCES Student(StudentID),
+	CONSTRAINT fk_StudentSubject_Course FOREIGN KEY(CourseID) REFERENCES Course(CourseID)
+	);
+	
+
+DROP TABLE Result;
+CREATE TABLE Result(
+	ResultID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+	ResultDate TIMESTAMP,
+	ResultDescription Varchar(255),
+	StudentID INTEGER NOT NULL,
+	LevelID Varchar(16) NOT NULL,
+	SemesterID Varchar(16) NOT NULL,
+	CourseID Varchar(16) NOT NULL,
+	Score INTEGER NOT NULL,
+	Grade char(1) NOT NULL,
+	CreatedBy Integer IMPLICITLY HIDDEN,
+	ModifiedAt Timestamp Default current_timestamp Implicitly Hidden,
+	Sys_start Timestamp(12) Generated Always As Row Begin Not Null Implicitly Hidden,
+	Sys_end Timestamp(12) Generated Always As Row End Not Null Implicitly Hidden,
+	trans_start timestamp(12) generated always as transaction start id implicitly hidden,
+	period system_time(sys_start,sys_end),
+	CONSTRAINT pk_Result PRIMARY KEY(ResultID),
+	CONSTRAINT fk_Result_Course FOREIGN KEY(CourseID) REFERENCES Course(CourseID), 
+	CONSTRAINT fk_Result_Semester FOREIGN KEY(SemesterID) REFERENCES Semester(SemesterID),
+	CONSTRAINT fk_Result_Student FOREIGN KEY(StudentID) REFERENCES Student(StudentID),
+	CONSTRAINT fk_Result_Level FOREIGN KEY(LevelID) REFERENCES Level(LevelID)
+	);
+
+-- DROP TABLE Result_History;
+CREATE TABLE Result_History LIKE Result;
+ALTER TABLE Result_History APPEND ON;
+ALTER TABLE Result ADD VERSIONING USE HISTORY TABLE Result_History;
+
+DROP TABLE TimeTable;
+CREATE TABLE TimeTable(
+	TimeTableID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+	TermDate INTEGER,
+	LevelID Varchar(16) NOT NULL,
+	CourseID Varchar(16) NOT NULL,
+	StaffID INTEGER NOT NULL,
+	CreatedBy Integer IMPLICITLY HIDDEN,
+	ModifiedAt Timestamp Default current_timestamp Implicitly Hidden,
+	CONSTRAINT pk_TimeTable PRIMARY KEY(TimeTableID),
+	CONSTRAINT pk_TimeTable_Level FOREIGN KEY(LevelID) REFERENCES Level(LevelID),
+	CONSTRAINT pk_TimeTable_Staff FOREIGN KEY(StaffID) REFERENCES Staff(StaffID),
+	CONSTRAINT pk_TimeTable_Course FOREIGN KEY(CourseID) REFERENCES Course(CourseID)
+	);
+	
+DROP TABLE MenuLink;
+CREATE TABLE MenuLink(
+	LinkID Varchar(16) NOT NULL,
+	Description Varchar(255),
+	MenuID Varchar(16) NOT NULL,
+	url Varchar(255),
+	CONSTRAINT pk_MenuLink PRIMARY KEY(LinkID),
+	CONSTRAINT fk_MenuLink_Menu FOREIGN KEY(MenuID) REFERENCES Menu(MenuID)
+	);
+	
+
+DROP TABLE Permission;
+CREATE TABLE  Permission(
+	RoleID Varchar(16) NOT NULL,
+	Mode Varchar(16) NOT NULL,
+	LinkID Varchar(16) NOT NULL,
+	CONSTRAINT pk_Permission PRIMARY KEY(RoleID,Mode),
+   	CONSTRAINT fk_Permission_UserRole FOREIGN KEY(RoleID) REFERENCES UserRole(RoleID),
+	CONSTRAINT fk_Permission_MenuLin FOREIGN KEY(LinkID) REFERENCES MenuLink(LinkID)
+	);
+	
+DROP TABLE User;
+CREATE TABLE User(
+	User Varchar(16) NOT NULL,
+	Surname Varchar(32),
+	Othernames Varchar(32),
+	RoleID Varchar(16) NOT NULL,
+	Password Varchar(255),
+	CreatedBy Integer IMPLICITLY HIDDEN,
+	ModifiedAt Timestamp Default current_timestamp Implicitly Hidden,
+	sys_start Timestamp(12) Generated Always  As Row Begin Not Null Implicitly Hidden,
+	sys_end Timestamp(12) Generated Always As Row End Not Null Implicitly Hidden,
+	trans_start Timestamp(12) Generated Always As Transaction Start id Implicitly Hidden,
+	period system_time(sys_start, sys_end),
+	CONSTRAINT pk_User PRIMARY KEY(User),
+	CONSTRAINT fk_User_UserRole FOREIGN KEY(RoleID) REFERENCES UserRole(RoleID) 
+	);
+
+DROP TABLE UserLogin;
+CREATE TABLE  UserLogin(
+	User Varchar(16) NOT NULL,
+	LoginTime TIMESTAMP NOT NULL,
+	RemoteHost Varchar(128),
+	MachineID Varchar(128),
+	LogoutTime TIMESTAMP,
+	CreatedBy Integer IMPLICITLY HIDDEN,
+	ModifiedAt Timestamp Default current_timestamp Implicitly Hidden,
+	PRIMARY KEY(User,LoginTime),
+	FOREIGN KEY(User) REFERENCES User(User)
+	);
+	
+DROP  TABLE Country;
+CREATE TABLE Country(
+	CountryCode CHAR(3) NOT NULL,
+   	Name VARCHAR(64) NOT NULL,
+	ContinentCode CHAR(5),
+	CONSTRAINT pk_Country PRIMARY KEY(CountryCode)
+	);
+	
+
+DROP TABLE AULevel1;
+CREATE TABLE AULevel1(
+CountryCode Char(3) NOT NULL,
+AULevel1ID varchar(5) NOT NULL,
+Name varchar(100) NOT NULL,
+CONSTRAINT pk_AULevel1 PRIMARY KEY(CountryCode,AULevel1ID),
+CONSTRAINT fk_AULevel1_Country FOREIGN KEY(CountryCode) REFERENCES Country(CountryCode) 
+);
+
+
+DROP TABLE AULevel2;
+CREATE TABLE AULevel2 (
+CountryCode char(3) NOT NULL,
+AULevel1ID varchar(5) NOT NULL,
+Name varchar(100) NOT NULL,
+AULevel2ID varchar(5) NOT NULL,
+CONSTRAINT pk_AULevel PRIMARY KEY (CountryCode, AULevel1ID, AULevel2ID),
+CONSTRAINT fk_AULevel1_AULevel1 FOREIGN KEY (CountryCode, AULevel1ID) REFERENCES AULevel1 (CountryCode, AULevel1ID) 
+);
+
+
+DROP TABLE AULevel3;
+CREATE TABLE AULevel3(
+CountryCode Char(3) NOT NULL,
+AULevel1ID Varchar(5) NOT NULL,
+Name Varchar(100) NOT NULL,
+AULevel2ID Varchar(5) NOT NULL,
+AULevel3ID Varchar(5) NOT NULL,
+CONSTRAINT pk_AULevel3 PRIMARY KEY(CountryCode,AULevel1ID,AULevel2ID,AULevel3ID),
+CONSTRAINT pk_AULevel1_AULevel2 FOREIGN KEY(CountryCode,AULevel1ID,AULevel2ID) REFERENCES AULevel2(CountryCode,AULevel1ID,AULevel2ID)
+);
+
+
+	
+
+
+	

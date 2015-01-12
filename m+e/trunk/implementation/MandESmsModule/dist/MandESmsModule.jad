@@ -1,0 +1,8 @@
+MIDlet-1: OperationsMidlet, , MandE.OperationsMidlet
+MIDlet-Jar-Size: 5436
+MIDlet-Jar-URL: MandESmsModule.jar
+MIDlet-Name: MandESmsModule
+MIDlet-Vendor: Vendor
+MIDlet-Version: 1.0
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

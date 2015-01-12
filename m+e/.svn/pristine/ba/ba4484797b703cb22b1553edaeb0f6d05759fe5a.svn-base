@@ -1,0 +1,3852 @@
+<?php require_once("includes/session.php"); ?>
+
+<?php
+
+include 'route.php';
+include 'includes/function.php';
+$route = new Route();
+$route ->add('/', function(){
+	$body = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';					   
+	$body .= '<p> This is the WebService Controller for Monitoring and Evaluation Project.</p>';
+	$body .= '<p> To comsume this web service, attache to the URL the name of the method you are targeting';
+	$body .= 'eg. <br />http://localhost/m+eWebService/activateUser<br/> This enables you to call the activate user method.</p>';
+	$body .='<p>You can therefore, go ahead to attached the parameters</>';
+	$body .='<p>Developed by Jonathan Wonye, Dayo Olaniyi, Chia Peter. Powered by Quanteq Technology Services, Abuja';
+	$body .='<p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>';
+  echo json_encode($body);
+  echo '<br />';
+  $code[] = $status = array(
+		    200 => 'OK',
+		    201 => 'Created',
+			204 => 'No Content',
+			404 => 'Not Found',
+			500 => 'Internal Server Error',
+			503 => 'Service Unavailable'
+		   
+					   );
+  echo '<pre>';
+  echo "Status Code and their Meaning <br />";
+ // echo json_encode($code);
+ foreach($status as $key => $value){
+echo $key . "  =>  " . $value;
+echo "<br />";
+
+  }
+});
+$route ->add('/activateIndicator', function(){
+if ($_SESSION['username'] == ""){
+    $preload = array(
+                "status"=> "",
+		"message"=> "Your login could not be verify, please login"
+		 );
+   echo json_encode($preload);
+}
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $IndicatorID = trim($_POST['indicatorid']);
+   $UserName  = trim($_POST['username']);
+   $permission  = trim($_POST['permission']);
+   
+   if(isset($IndicatorID)&&(!empty($IndicatorID))&&(isset($UserName)
+		&&(!empty($UserName)))&&(isset($permission)&&(!empty($permission)))){
+		
+		include 'includes/connection.php';
+		try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL activateIndicator('$IndicatorID','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Indicator activated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/activateUser', function(){
+									   
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  $Username = trim($_POST['username']);
+   $adminUsername  = trim($_POST['adminusername']);
+   $adminPassword  = trim($_POST['adminpassword']);
+   
+   if(isset($Username)&&(!empty($Username))&&(isset($adminUsername)&&
+           (!empty($adminUsername)))&&(isset($adminPassword)&&(!empty($adminPassword)))){
+	  include 'includes/connection.php';
+	  	try{
+			$conn = new tblQuery();
+			 try{
+			         $query = "CALL activateUser('$Username','$adminUsername','$adminPassword')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "User activated successfully";
+			}else{
+				 throw new Exception("Procedure call failed: User activation failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+	
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+		}	
+			$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+		if(isset($conn))        mysqli_close($conn);
+	echo json_encode($preload);
+});
+$route ->add('/addAddress', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  $addressTypeID = trim($_POST['addresstypeid']);
+  $cCode = trim($_POST['ccode']);
+  $AUL1ID = trim($_POST['aul1id']);
+  $AUL2ID = trim($_POST['aul2id']);
+  $AUL3ID = trim($_POST['aul3id']);
+  $respondentID = trim($_POST['respondentid']);
+  $address1 = trim($_POST['address1']);
+  $address2 = trim($_POST['address2']);
+  $UserName = trim($_POST['username']);
+  $permission = trim($_POST['permission']);
+  
+   include 'includes/connection.php';
+        
+         if(isset($addressTypeID)&&(!empty($addressTypeID))&&(isset($cCode)&&(!empty($cCode)))&&(isset($AUL1ID)&&(!empty($AUL1ID)))
+               &&(isset($AUL2ID)&&(!empty($AUL2ID)))&&(isset($AUL3ID)&&(!empty($AUL3ID)))&&(isset($respondentID)&&(!empty($respondentID)))
+		       &&(isset($address1)&&(!empty($address1)))&&(isset($address2)&&(!empty($address2)))&&(isset($UserName)&&(!empty($UserName)))
+		       &&(isset($permission)&&(!empty($permission)))){
+		try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL addAddress('$addressTypeID','$cCode','$AUL1ID','$AUL2ID','$AUL3ID','$respondentID','$address1',
+		                            '$address2','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Address added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+                            
+});
+$route ->add('/addAddressType', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $typeID = trim($_POST['typeid']);
+   $description = trim($_POST['description']);
+   $Username = trim($_POST['username']);
+   $Permission = trim($_POST['permission']);
+ include 'includes/connection.php';
+   		
+       if(isset($typeID)&&(!empty($typeID))&&(isset($description)&&(!empty($description)))&&
+	     (isset($Username)&&(!empty($Username)))&&(isset($Permission)&&(!empty($Permission)))){
+		
+			try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL addAddressType('$typeID','$description','$Username','$Permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Address type added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		    
+});
+$route ->add('/addAUL1', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+   $countryID = trim($_POST['countrycode']);
+   $AUL1ID = trim($_POST['aul1id']);
+   $Name = trim($_POST['name']);
+   $UserName = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+   include 'includes/connection.php';
+              
+           if((isset($countryID))&&(!empty($countryID))&&(isset($AUL1ID))&&(!empty($AUL1ID))&&
+	         (isset($Name))&&(!empty($Name))&&(isset($UserName))&&(!empty($UserName))&&
+			 (isset($permission))&&(!empty($permission))){
+	 try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL addAUL1('$countryID','$AUL1ID','$Name','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "AU Level added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addAUL2', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $countryID = trim($_POST['countrycode']);
+   $AUL1ID = trim($_POST['aul1id']);
+   $Name = trim($_POST['name']);
+   $AUL2ID = trim($_POST['aul2id']);
+   $UserName = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+  include 'includes/connection.php';
+  
+        if((isset($countryID))&&(!empty($countryID))&&(isset($AUL1ID))&&(!empty($AUL1ID))&&
+	      (isset($Name))&&(!empty($Name))&&(isset($UserName))&&(!empty($UserName))&&
+	      (isset($permission))&&(!empty($permission))){   
+                try{
+			$conn = new tblQuery();
+			 try{
+			       $query = "addAUL2('$countryID','$AUL1ID','$Name','$AUL2ID','$UserName','$permission')";
+                               $result = $conn->proCallNoValue($query);
+					//$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "AU Level 2 added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addAUL3', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $countryID = trim($_POST['countrycode']);
+   $AUL1ID = trim($_POST['aul1id']);
+   $Name = trim($_POST['name']);
+   $AUL2ID = trim($_POST['aul2id']);
+   $AUL3ID = trim($_POST['aul3id']);
+   $UserName = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+  include 'includes/connection.php';
+    
+    if(isset($countryID)&&(!empty($countryID))&&(isset($AUL1ID)&&(!empty($AUL1ID)))&&
+	  (isset($Name)&&(!empty($Name)))&&(isset($AUL2ID)&&(!empty($AUL2ID)))&&
+	  (isset($AUL3ID)&&(!empty($AUL3ID)))&&(isset($UserName)&&(!empty($UserName)))&&
+	  (isset($permission)&&(!empty($permission)))){
+		
+	   try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL addAUL3('$countryID','$AUL1ID','$Name','$AUL2ID','$AUL3ID','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "AU Level3 added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addContinient', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $continentID = trim($_POST['continentcode']);
+   $name = trim($_POST['name']);
+   $Username = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+   include 'includes/connection.php';
+     
+          if(isset($continentID)&&(!empty($continentID))&&(isset($name))&&(!empty($name))&&
+	        (isset($Username))&&(!empty($Username))&&(isset($permission))&&(!empty($permission))){		
+		      
+                    try{
+			$conn = new tblQuery();
+			 try{
+			         $query = "CALL addContinient('$continentID','$name','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Continent added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addCountry', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $countryID = trim($_POST['countrycode']);
+   $Name = trim($_POST['name']);
+   $ContinentCode = trim($_POST['continentcode']);
+   $UserName = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+   include 'includes/connection.php';
+   
+         if(isset($countryID)&&(!empty($countryID))&&(isset($Name))&&(!empty($Name))&&
+	       (isset($ContinentCode))&&(!empty($ContinentCode))&&(isset($UserName))&&(!empty($UserName))&&
+		   (isset($permission))&&(!empty($permission))){
+		
+                 try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL addCountry('$countryID','$Name','$ContinentCode','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Country added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addDataSource', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $sourceID = trim($_POST['sourceid']);
+   $description = trim($_POST['description']);
+   $Username = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   include 'includes/connection.php';
+   
+          if(isset($sourceID)&&(!empty($sourceID))&&(isset($description)&&(!empty($description)))&&
+	        (isset($Username)&&(!empty($Username)))&&(isset($permission)&&(!empty($permission)))){
+		
+		  
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL addDataSource('$sourceID','$description','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Data source added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+
+
+$route ->add('/addFacility', function(){
+/***************************************************************
+method to add facility to the DB, No response type.
+****************************************************************/		
+	$facilityTypeID = trim($_POST['facilitytypeid']);
+	$contactID = trim($_POST['contactid']);
+	$statusID = trim($_POST['statusid']);
+	$serviceTypeID = trim($_POST['servicetypeid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+include 'includes/connection.php';
+     if( (isset($facilityTypeID)&&(!empty($facilityTypeID))) && (isset($contactID)&&(!empty($contactID))) && 
+		    (isset($statusID)&&(!empty($statusID))) && (isset($serviceTypeID)&&(!empty($serviceTypeID))) && 
+		    (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission)))) {
+		
+		    
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addFacility('$facilityTypeID' ,'$contactID', '$statusID', '$serviceTypeID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Facility added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+
+$route ->add('/addFacilityContact', function(){
+/***************************************************************
+method to add contact to a facility.
+****************************************************************/
+	$description = trim($_POST['description']);
+	$contactEmail = trim($_POST['contactemail']);
+	$phoneNumber = trim($_POST['phonenumber']);
+	$surname = trim($_POST['surname']);
+	$firstName = trim($_POST['firstname']);
+	$middleName = trim($_POST['middlename']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	include 'includes/connection.php';
+	
+	     if( (isset($description)&&(!empty($description))) && (isset($contactEmail)&&(!empty($contactEmail))) && 
+		   (isset($phoneNumber)&&(!empty($phoneNumber))) && (isset($surname)&&(!empty($surname))) && 
+		   (isset($firstName)&&(!empty($firstName))) && (isset($middleName)&&(!empty($middleName))) &&
+		   (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		
+		        
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addFacilityContact('$description' ,'$contactEmail', '$phoneNumber',
+                                 		        '$surname', '$firstName', '$middleName',
+										        '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Facility contact added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+	
+});
+
+$route ->add('/addFacilityService', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$serviceID = trim($_POST['serviceid']);
+	$name = trim($_POST['name']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+include 'includes/connection.php';
+
+	   if((isset($serviceID)&&(!empty($serviceID))) && (isset($name)&&(!empty($name))) && 
+		   (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+	try{
+			$conn = new tblQuery();
+			 try{
+			       $query="call addFacilityService('$serviceID' ,'$name', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Facility service added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+
+$route ->add('/addFacilityType', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$typeID = trim($_POST['typeid']);
+	$name = trim($_POST['name']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+include 'includes/connection.php';
+	      
+	         if((isset($typeID)&&(!empty($typeID))) && (isset($name)&&(!empty($name))) && 
+		       (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		
+		        
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addFacilityType('$typeID' ,'$name', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Facility type added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addHumanRespondent', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+    
+	$surname = trim($_POST['surname']);
+	$middleName = trim($_POST['middlename']);
+	$firstName = trim($_POST['firstname']);
+	$dob = trim($_POST['dob']);
+	$sex = trim($_POST['sex']);
+	$maritalID = trim($_POST['maritalid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	include 'includes/connection.php';
+		     
+	            if((isset($surname)&&(!empty($surname))) && (isset($middleName)&&(!empty($middleName))) && 
+		          (isset($firstName)&&(!empty($firstName))) && (isset($dob)&&(!empty($dob))) && 
+				  (isset($sex)&&(!empty($sex)))&&
+		          (isset($maritalID)&&(!empty($maritalID))) && (isset($username)&&(!empty($username))) &&
+		          (isset($permission)&&(!empty($permission)))){
+		
+		    
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addHumanRespondent('$surname' ,'$middleName', '$firstName',
+                                 						'$dob','$sex', '$maritalID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Human respondent added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addIndicator', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$ID = trim($_POST['id']);
+	$name = trim($_POST['name']);
+	$statusID = trim($_POST['statusid']);
+	$indicatorClassID = trim($_POST['indicatorclassid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	 include 'includes/connection.php';
+	   
+	        if((isset($ID)&&(!empty($ID))) && (isset($name)&&(!empty($name))) && 
+	          (isset($statusID)&&(!empty($statusID))) && (isset($indicatorClassID)&&(!empty($indicatorClassID))) && 
+	          (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		
+		      
+try{
+			$conn = new tblQuery();
+			 try{
+			       $query="call addIndicator('$ID' ,'$name', '$statusID', '$indicatorClassID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Indicator added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addIndicatorClass', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$classID = trim($_POST['id']);
+	$description = trim($_POST['description']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	include 'includes/connection.php';
+	
+	              if((isset($classID)&&(!empty($classID))) && (isset($description)&&(!empty($description))) && 
+		            (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		
+		            
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addIndicatorClass('$classID' ,'$description', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Indicator class added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addLevel', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$countryID = trim($_POST['countryid']);
+	$lev1Name = trim($_POST['lev1name']);
+	$lev2Name = trim($_POST['lev2name']);
+	$lev3Name = trim($_POST['lev3name']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	
+	include 'includes/connection.php';
+	
+	         if((isset($countryID)&&(!empty($countryID))) && (isset($lev1Name)&&(!empty($lev1Name))) && 
+	           (isset($lev2Name)&&(!empty($lev2Name))) && (isset($lev3Name)&&(!empty($lev3Name))) && 
+		       (isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		
+		         
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addLevel('$countryID' ,'$lev1Name', '$lev2Name', '$lev3Name', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Level added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addMeasure', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	$scheduleID = trim($_POST['sid']);
+	$questionID = trim($_POST['qid']);
+	$indicatorID = trim($_POST['indicatorid']);
+	$dateOfMeasurement = trim($_POST['dateofmeasurement']);
+	$dateCollected = trim($_POST['datecollected']);
+	$collector = trim($_POST['collector']);
+	$teamID = trim($_POST['teamid']);
+	$score = trim($_POST['score']);
+	$respondentID = trim($_POST['respondentid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	include 'includes/connection.php';
+
+	      if((isset($scheduleID)&&(!empty($scheduleID))) && (isset($questionID)&&(!empty($questionID))) && 
+		    (isset($indicatorID)&&(!empty($indicatorID))) && (isset($dateOfMeasurement)&&(!empty($dateOfMeasurement))) && 
+		    (isset($dateCollected)&&(!empty($dateCollected))) && (isset($collector)&&(!empty($collector))) && 
+		    (isset($teamID)&&(!empty($teamID))) && (isset($score)&&(!empty($score))) &&
+		    (isset($respondentID)&&(!empty($respondentID))) && (isset($username)&&(!empty($username))) && 
+		    (isset($permission)&&(!empty($permission))) ){
+		
+		  
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addMeasure('$scheduleID' ,'$questionID', '$indicatorID',
+                        		   '$dateOfMeasurement', '$dateCollected', '$collector', 
+								   '$teamID', '$score', '$respondentID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Measure added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addPermission', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	$permissionID = trim($_POST['permissionid']);
+	$roleID = trim($_POST['roleid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	include 'includes/connection.php';
+	
+	     if((isset($permissionID)&&(!empty($permissionID))) && (isset($roleID)&&(!empty($roleID))) && 
+	     	(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		
+		                 
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call addPermission('$permissionID' ,'$roleID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Permission added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addPermissionType', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+$permissionID = trim($_POST['permissionid']);
+$description = trim($_POST['description']);
+$Username = trim($_POST['username']);
+$permission = trim($_POST['permission']);
+   include 'includes/connection.php';
+  
+                      if((isset($permissionID)&&(!empty($permissionID)))&&(isset($description)&&(!empty($description)))&&
+	                     (isset($Username)&&(!empty($Username)))&&(isset($permission)&&(!empty($permission)))){
+                               
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "call addPermissionType('$permissionID','$description','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Permission type added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+
+$route ->add('/addQuestion', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+$indicatorID =trim($_POST['indicatorid']);
+$qStatusID = trim($_POST['qstatusid']);
+$description = trim($_POST['description']);
+$instructions = trim($_POST['instruction']);
+$hint = trim($_POST['hint']);
+$resultType = trim($_POST['resulttype']);
+$UserName = trim($_POST['username']);
+$Permission = trim($_POST['permission']);
+
+   include 'includes/connection.php';
+
+       	      if((isset($indicatorID)&&(!empty($indicatorID)))&&(isset($qStatusID)&&(!empty($qStatusID)))&&
+			     (isset($description)&&(!empty($description)))&&(isset($instructions)&&(!empty($instructions)))&&
+				 (isset($hint)&&(!empty($hint)))&&(isset($resultType)&&(!empty($resultType)))&&
+				 (isset($UserName)&&(!empty($UserName)))&&(isset($Permission)&&(!empty($Permission)))){ 
+	             
+				 
+		   try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "call addQuestion('$indicatorID','$qStatusID',
+		                                     '$description','$instructions',
+									    	 '$hint','$resultType','$UserName','$Permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Question added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+}); 
+$route ->add('/addRespondent', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+$description = trim($_POST['description']);
+$facilityID = trim($_POST['facilityid']);
+$humanID = trim($_POST['humanid']);
+$UserName = trim($_POST['username']);
+$Permission = trim($_POST['permission']);
+   include 'includes/connection.php';
+	 
+            if((isset($description)&&(!empty($description)))&&(isset($facilityID)&&(!empty($facilityID)))&&
+			  (isset($humanID)&&(!empty($humanID)))&&(isset($UserName)&&(!empty($UserName)))&&(isset($Permission)&&(!empty($Permission)))){
+			  
+                 
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "call addRespondent('$description','$facilityID','$humanID','$UserName','$Permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Respondent added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addResultType', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  $resultID = trim($_POST['resultid']);
+  $description = trim($_POST['description']);
+  $Username = trim($_POST['username']);
+  $Permission = trim($_POST['permission']);
+ include 'includes/connection.php';
+	 
+	                 if((isset($resultID)&&(!empty($resultID)))&&(isset($description)&&(!empty($description)))&&
+	                   (isset($Username)&&(!empty($Username)))&&(isset($Permission))&&(!empty($Permission))){
+				
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "call addResultType('$resultID','$description','$Username','$Permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Result type added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addTeam', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  $teamID = trim($_POST['teamid']);
+  $description = trim($_POST['description']);
+  $UserName = trim($_POST['username']);
+  $permission = trim($_POST['permission']);
+  
+  include 'includes/connection.php';
+
+              if((isset($teamID)&&(!empty($teamID)))&&(isset($description)&&(!empty($description)))&&
+		        (isset($UserName)&&(!empty($UserName)))&&(isset($permission)&&(!empty($permission)))){
+                                     
+   try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "call addTeam('$teamID','$description','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Team added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addTeamMember', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+		  $teamID = trim($_POST['teamid']);
+		  $inUsername = trim($_POST['uname']);
+		  $teamLead  = trim($_POST['teamlead']);
+		  $Username = trim($_POST['username']);
+		  $Permission = trim($_POST['permission']);
+  
+  include 'includes/connection.php';
+
+           if((isset($teamID)&&(!empty($teamID)))&&(isset($inUsername)&&(!empty($inUsername)))&&
+		     (isset($teamLead)&&(!empty($teamLead)))&&(isset($Username)&&(!empty($Username)))&&
+			 (isset($Permission)&&(!empty($Permission)))){
+			  
+                     
+   try{
+			$conn = new tblQuery();
+			 try{
+			         $query = "call addTeamMember('$teamID','$inUsername','$teamLead','$Username','$Permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Respondent added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addTeamRespondent', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+ $respondentID = trim($_POST['respondentid']);
+ $teamID = trim($_POST['teamid']);
+ $Username = trim($_POST['username']);
+ $Permission  = trim($_POST['permission']);
+  
+include 'includes/connection.php';
+	 
+              if((isset($respondentID)&&(!empty($respondentID)))&&(isset($teamID)&&(!empty($teamID)))&&
+			     (isset($Username)&&(!empty($Username)))&&(isset($Permission)&&(!empty($Permission)))){
+				 
+   try{
+			$conn = new tblQuery();
+			 try{
+			         $query = "call addTeamRespondent('$respondentID','$teamID','$Username','$Permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Team respondent added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addUser', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  $username = trim($_POST['uname']);
+  $password = trim($_POST['pword']);
+  $surname = trim($_POST['sname']);
+  $firstname = trim($_POST['fname']);
+  $sourceID = trim($_POST['sourceid']);
+  $roleID = trim($_POST['roleid']);
+  $capturedPeriod = trim($_POST['capturedperiod']);
+  $UserName = trim($_POST['username']);
+  $permission = trim($_POST['permission']);
+  
+ include 'includes/connection.php';
+	
+		     if((isset($username)&&(!empty($username)))&&(isset($username)&&(!empty($username)))&&
+			    (isset($surname)&&(!empty($surname)))&&(isset($firstname)&&(!empty($firstname)))&&
+				(isset($sourceID)&&(!empty($sourceID)))&&(isset($roleID)&&(!empty($roleID)))&&
+				(isset($capturedPeriod)&&(!empty($capturedPeriod)))&&(isset($UserName)&&(!empty($UserName)))&&
+				(isset($permission)&&(!empty($permission)))){
+		                     
+							
+try{
+			$conn = new tblQuery();
+			 try{
+			         $query = "call addUser('$username','$password',
+		                                              '$surname','$firstname',
+										              '$sourceID','$roleID',
+										              '$capturedPeriod','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "User added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addUserRole', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+ $roleID = trim($_POST['roleid']);
+ $description = trim($_POST['description']);
+ $Username  = trim($_POST['uname']);
+ $permission   = trim($_POST['permission']);
+ 
+ include 'includes/connection.php';
+ 
+              if((isset($roleID)&&(!empty($roleID)))&&(isset($description)&&(!empty($description)))&&
+			     (isset($Username)&&(!empty($Username)))&&(isset($permission)&&(!empty($permission)))){
+				 
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "call addUserRole('$roleID','$description','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "User role added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/addZone', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  $zoneCode = trim($_POST['zcode']);
+  $countryCode = trim($_POST['ccode']);
+  $description = trim($_POST['description']);
+  $Username = trim($_POST['uname']);
+  $permission = trim($_POST['permission']);
+ include 'includes/connection.php';
+               if((isset($zoneCode)&&(!empty($zoneCode)))&&(isset($countryCode)&&(!empty($countryCode)))&&
+			      (isset($description)&&(!empty($description)))&&(isset($Username)&&(!empty($Username)))&&
+				  (isset($permission)&&(!empty($permission)))){		
+                        try{
+			$conn = new tblQuery();
+			 try{
+			       $query = "call addZone('$zoneCode','$countryCode','$description','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Zone added successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+//begins
+$route ->add('/changeUserPassword', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$admin = trim($_POST['admin']);
+	$Apwd = trim($_POST['apwd']);
+	$username = trim($_POST['uname']);
+	$Password = trim($_POST['password']);
+		include 'includes/connection.php';
+  
+	       if((isset($admin)&&(!empty($admin))) && (isset($Apwd)&&(!empty($Apwd)))&&
+             (isset($username)&&(!empty($username)))&&(isset($Password)&&(!empty($Password)))){
+		
+		        
+try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call changeUserPassword('$admin','$Apwd','$username','$Password')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "User password changed successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/createUserRole', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$roleID = trim($_POST['roleid']);
+	$description = trim($_POST['description']);
+	$admin = trim($_POST['admin']);
+	$Apwd = trim($_POST['apwd']);
+ include 'includes/connection.php';	
+	if( (isset($roleID)&& !empty($roleID)) && (isset($description)&& !empty($description)) &&
+		(isset($admin)&& !empty($admin)) && (isset($Apwd)&& !empty($Apwd)) ){
+		
+		            
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call createUserRole('$roleID', '$description', '$admin' ,'$Apwd')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "User role created successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/deactivateIndicator', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	$indicatorID = trim($_POST['indicatorid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+include 'includes/connection.php';
+	if( (isset($indicatorID)&&(!empty($indicatorID))) && (isset($username)&&(!empty($username))) &&
+		(isset($permission)&&(!empty($permission))) ){
+		
+		  
+try{
+			$conn = new tblQuery();
+			 try{
+			       $query="call deactivateIndicator('$indicatorID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Indicator deactivated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+});
+$route ->add('/deactivateUser', function(){                                   //cross-check parameter in the database for possible error
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	$username = trim($_POST['username']);
+	$password = trim($_POST['password']);
+	
+	if( (isset($indicatorID)&&(!empty($indicatorID))) && (isset($username)&&(!empty($username))) ){
+		
+		
+	try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call deactivateUser('$username', '$password')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "User deactivated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+
+});
+$route ->add('/getAllAULevel1', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getAllAULevel1()";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+			
+			
+});
+$route ->add('/getAllAULevel2', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getAllAULevel2()";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+	
+
+});
+$route ->add('/getAllAULevel3', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getAllAULevel3()";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+			$status = 200;
+			 $msg = "ok";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                       
+                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+	
+
+});
+$route ->add('/getAllIndicators', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getAllIndicators()";;
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+			$status = 200;
+			 $msg = "ok";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+	
+});
+$route ->add('/getAllQuestions', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "call getAllQuestions()";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+	
+
+});
+$route ->add('/getAULevel1', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getAULevel1";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+                        
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			if(isset($conn))        mysqli_close($conn);
+			echo json_encode($preload);
+	
+});
+$route ->add('/getAULevel2', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+    $AUL1ID = trim($_POST['aul1id']);
+	
+	if(!empty($AUL1ID)){
+include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getAULevel2('$AUL1ID')";
+			
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+                        	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			if(isset($conn))        mysqli_close($conn);
+			echo json_encode($preload);
+	
+});
+
+$route ->add('/getAULevel3', function(){
+/***************************************************************
+Returns the list of all wards in a specified LGA and state.
+****************************************************************/
+include 'includes/connection.php';
+    $AUL1ID = trim($_POST['aul1id']);
+	$AUL2ID = trim($_POST['aul2id']);
+	//$result = array();
+	
+	if( (!empty($AUL1ID)) && (!empty($AUL2ID)) ){
+		
+		try{
+		 	$conn = new tblQuery();
+		try{
+			$methodName = "getAULevel3('$AUL1ID','$AUL2ID')";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			
+		}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+	}
+	$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=> $result
+							 );
+			print_r(json_encode($preload));
+			
+});
+$route ->add('/getCountries', function(){
+/***************************************************************
+Returns all countries from the Countries table
+****************************************************************/
+include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getCountries()";
+			
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 'status'=> $status,
+							 'message'=> $msg,
+							 'response'=> $result
+							 );
+			echo json_encode($preload);
+});
+$route ->add('/getCountriesinContinent', function(){
+/***************************************************************
+Returns all the countries in a given continent... parameter: continent code... response:List of countries
+****************************************************************/
+    $continentCode = trim($_POST['continentcode']);
+	
+	if( (isset($continentCode)&&(!empty($continentCode))) ){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getCountriesinContinent('$continentCode')";
+			
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+        }else{
+            $status = 204;
+            $msg = "No content: one or two fields are empty";
+            
+        }
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+});
+$route ->add('/getFacilities', function(){
+/***************************************************************
+method returns all the facilities of the facility table in the DB.... patameter:none... response:all facilities in DB
+****************************************************************/
+include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getFacilities()";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 215;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 204;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+
+});
+$route ->add('/getFacilitiesbyServices', function(){
+/***************************************************************
+method to return information for a particular facility based on its service.... parameter:service ID... response:service's facility...
+****************************************************************/
+ $servicesID = trim($_POST['servicesid']);
+ include 'includes/connection.php';
+ if(isset($servicesID)&&(!empty($servicesID))){
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getFacilitiesbyServices('$servicesID')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+                    }else{
+                            $status = 204;
+                            $msg = "No content: one or two fields are empty";
+            
+        }
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+});
+$route ->add('/getFacilityAddress', function(){
+/***************************************************************
+methos to return the address of a facility... parameter:facility ID... response:facility's address...
+****************************************************************/
+
+ $facilityID = trim($_POST['facilityid']);
+	if( (isset($facilityID)&&(!empty($facilityID))) ){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getFacilityAddress('$facilityID')";
+			//$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+        }else {
+            $status = 204;
+            $msg = "No content: two or more fields are empty";
+        }
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getHumanAddress', function(){
+/***************************************************************
+method to get human respondent physical address... parameter:respondent ID, response:respondent's physical address
+****************************************************************/
+
+ $humanID = trim($_POST['humanid']);
+ if(isset($humanID)&&(!empty($humanID))){
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getHumanAddress('$humanID')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+ }else{
+                            $status = 204;
+                            $msg = "No content: one, two or three fields are empty";
+                        }
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+	
+});
+$route ->add('/getActiveFacilities', function(){
+/***************************************************************
+method to fetch all the active facilities in the DB... parameter:none... response:all active facilities...
+****************************************************************/
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getActiveFacilities()";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getInActiveIndicators', function(){
+/***************************************************************
+method to fetch all in-active indicators... parameter:none... response:all in-active indicators...
+****************************************************************/
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getInActiveIndicators()";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getIndicatorClass', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getIndicatorClass()";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+			
+});
+$route ->add('/getLevelsinCountry', function(){
+   
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+$countryCode = trim($_POST['countrycode']);
+	
+	if( isset($countryCode)&& !empty($countryCode) ){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getLevelsinCountry('$countryCode')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+        }else{
+            $status = 204;
+            $msg = "No conten: two or three fields are empty";
+        }
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+   	
+$route ->add('/getMeasureForIndicator', function(){ 
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+$IndicatorID = trim($_POST['indicatorid']);
+	
+	if( (isset($IndicatorID)&&(!empty($IndicatorID))) ){
+		include 'includes/connection.php';
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getMeasureForIndicator('$IndicatorID')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+      }else{
+		$status=204;
+		$msg='No Content: two or three fields are empty';
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+	
+$route ->add('/getPermission', function(){ 
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   //include 'includes/connection.php';
+   $RoleID = trim($_POST['roleid']);
+   if( (isset($RoleID)&&(!empty($RoleID))) ){
+		include 'includes/connection.php';
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getPermission('$RoleID')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+         }else{
+		$status=204;
+		$msg='No Content: one or two fields are empty';
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getQuestionForIndicator', function(){ //done
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+ 
+   $indicatorID = trim($_POST['indicatorid']);
+	if( (isset($indicatorID)&&(!empty($indicatorID))) ){  
+		include 'includes/connection.php';
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getQuestionForIndicator('$indicatorID')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+               }else{
+		$status=204;
+		$msg='No Content: one or two fields are empty';
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getRespondentInfo', function(){ //undone
+/***************************************************************
+ToDo, capture your data and implement your business method here //only HUMAN respondent resolved
+****************************************************************/
+      include 'includes/connection.php';
+  $respondentType = trim($_POST['respondenttype']);
+  //$respondentType = 'Human';
+  if((isset($respondentType))&&(!empty($respondentType))){
+	
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getRespondentsInfo('$respondentType')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+             }else{
+		$status=204;
+		$msg='No Content: one or two fields are empty';
+                $result = NULL;
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+});
+$route ->add('/getRolePermission', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	$inRoleID = trim($_POST['roleid']);
+	if(isset($inRoleID)&& !empty($inRoleID)){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName ="getRolePermission('$inRoleID')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+                  }else{
+		$status=204;
+		$msg='No Content: one or two fields are empty';
+	}    
+                  
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getTeamMembers', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+   $inTeamID = trim($_POST['teamid']);
+   if(isset($inTeamID) && !empty($inTeamID)){
+	   include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getTeamMembers($inTeamID)";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+                  }else{
+		$status=204;
+		$msg='No Content: one or two fields are empty';
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+  
+});
+
+$route ->add('/getUserLogin', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getUserLogin()";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+	
+});
+$route ->add('/getUserPermission', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	$Username = trim($_POST['username']);
+	if(isset($Username) && isset($Username)){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getUserPermission('$Username')";
+			
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+               }else{
+		$status=204;
+		$msg='No Content: one or two fields are empty';
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+$route ->add('/getUsers', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+ include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getUsers()";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+         
+});
+$route ->add('/getZonesinCountry', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+	$countryCode = trim($_POST['countrycode']);
+        if(isset($countryCode)&&(!empty($countryCode))){
+	include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName = "getZonesinCountry('{$countryCode}')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "ok";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+        }else{
+            $status = 204;
+            $msg = "No content: two or three fields are empty";
+        }
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+                                                         mysql_close($conn);
+			echo json_encode($preload);
+  
+});
+$route ->add('/loginUser', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+	$username = trim($_POST['username']);
+	$password = trim($_POST['password']);
+	
+	if((isset($username)&& !empty($username)) && (isset($password)&& !empty($password)) ){
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName="loginUser('$username','$password')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg = "You are logged in";
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+                        $result = "";
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+                        $result = "";
+			}
+          }else{
+		$status=204;
+		$msg="No Content: one or two fields are empty";
+                $result = "";
+	}
+                                            $preload = array(
+							 'status' => $status,
+							 'message' => $msg,
+							 'response' =>$result
+							 );
+                                            
+			echo json_encode($preload);
+		
+		
+});
+$route ->add('/logoutUser', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+  include 'includes/connection.php';
+	$username = trim($_POST['username']);
+	
+	if(isset($username)&& !empty($username) ){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName="logoutUser('$username')";
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg='User logged out successfully';
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+        }else{
+		$status=204;
+		$msg="No Content: one or two fields are empty";
+	}
+			$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+					 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+		
+});
+$route ->add('/recordHumanRespondent', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include 'includes/connection.php';
+	$description = trim($_POST['description']);
+	$humanID = trim($_POST['humanid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+
+	
+	if( (isset($description)&& (!empty($description))) && (isset($humanID)&&(!empty($humanID))) &&
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName="recordHumanRespondent('$description', '$humanID', '$username', '$permission')";
+			
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg='Human record added successfully';
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+             }else{
+		$status=204;
+		$msg="No Content: one or two fields are empty";
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+		
+});
+$route ->add('/removePermissionFromRole', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include 'includes/connection.php';
+	$permissionID = trim($_POST['permissionid']);
+	$roleID = trim($_POST['roleid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($permissionID)&& (!empty($permissionID))) && (isset($roleID)&&(!empty($roleID))) &&
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		include 'includes/connection.php';
+	try{
+		 $conn = new tblQuery();
+	try{
+			$methodName="removePermissionFromRole('$permissionID', '$roleID', '$username', '$permission')";
+			$result = array();
+			$result = $conn->proCall($methodName);
+		
+		if($result){
+		
+			//echo "<pre>";
+			$status = 200;
+			 $msg='Permission remove from role successfully';
+			//echo "</pre>";
+		 }
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+		}catch(Exception $e){
+			$status = 500;
+			$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+			}
+                 }else{
+		$status=204;
+		$msg="No Content: one or two fields are empty";
+	}
+			$preload = array(
+							 "status"=> $status,
+							 "message"=> $msg,
+							 "response"=>$result
+							 );
+			echo json_encode($preload);
+		
+});
+
+$route ->add('/ScheduleActiveIndicator', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+	$scheduleID = trim($_POST['scheduleid']);
+	$questionID = trim($_POST['questionid']);
+	$indicatorStatusID = trim($_POST['indicatorstatusid']);
+	$indicatorID = trim($_POST['indicatorid']);
+	$startDate = trim($_POST['startdate']);
+	$endDate = trim($_POST['enddate']);
+	$minimumScoreValue = trim($_POST['minimumscorevalue']);
+	$maximumScoreValue = trim($_POST['maximumscorevalue']);
+	$frequencyID = trim($_POST['frequencyid']);
+	$methodOfMeasurementID = trim($_POST['methodofmeasurementid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($scheduleID)&&(!empty($scheduleID))) && (isset($questionID)&&(!empty($questionID))) && 
+		(isset($indicatorStatusID)&&(!empty($indicatorStatusID))) && (isset($indicatorID)&&(!empty($indicatorID))) && 
+		(isset($startDate)&&(!empty($startDate))) && (isset($endDate)&&(!empty($endDate))) && 
+		(isset($minimumScoreValue)&&(!empty($minimumScoreValue))) && (isset($maximumScoreValue)&&(!empty($maximumScoreValue))) &&
+		(isset($frequencyID)&&(!empty($frequencyID))) && (isset($methodOfMeasurementID)&&(!empty($methodOfMeasurementID))) &&
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call ScheduleActiveIndicator('$scheduleID' ,'$questionID', '$indicatorStatusID', '$indicatorID', '$startDate', '$endDate', '$minimumScoreValue', '$maximumScoreValue', '$frequencyID', '$methodOfMeasurementID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg='Schedules active indicator successfully';
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+                            $status = 503;
+                            $msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+		}
+                $preload = array(
+				 "status"=> $status,
+				 "message"=> $msg,
+                                 "response"=>$result
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		
+		
+});
+$route ->add('/updateAddress', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+	$addressID = trim($_POST['addressid']);
+	$addressTypeID = trim($_POST['addresstypeid']);
+	$country = trim($_POST['country']);
+	$AULevel1ID = trim($_POST['aulevel1id']);
+	$AULevel2ID = trim($_POST['aulevel2id']);
+	$AULevel3ID = trim($_POST['aulevel3id']);
+	$respondentID = trim($_POST['respondentid']);
+	$addressline1 = trim($_POST['addressline1']);
+	$addressline2 = trim($_POST['addressline2']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($addressID)&&(!empty($addressID))) && (isset($addressTypeID)&&(!empty($addressTypeID))) && 
+		(isset($country)&&(!empty($country))) && (isset($AULevel1ID)&&(!empty($AULevel1ID))) && 
+		(isset($AULevel2ID)&&(!empty($AULevel2ID))) && (isset($AULevel3ID)&&(!empty($AULevel3ID))) && 
+		(isset($respondentID)&&(!empty($respondentID))) && (isset($addressline1)&&(!empty($addressline1))) &&
+		(isset($addressline2)&&(!empty($addressline2))) && 
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call updateAddress('$addressID' ,'$addressTypeID', '$country', '$AULevel1ID', '$AULevel2ID', '$AULevel3ID', '$respondentID', '$addressline1', '$addressline2', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg="Address updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+		
+	if(isset($conn))        mysqli_close($conn);}	
+	echo json_encode($preload);
+		
+		
+});
+$route ->add('/updateFacility', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+	include'includes/connection.php';
+    $facilityID = trim($_POST['facilityid']);
+	$facilityTypeID = trim($_POST['facilitytypeid']);
+	$contactID = trim($_POST['contactid']);
+	$facilityStatusID = trim($_POST['facilitystatusid']);
+	$serviceTypeID = trim($_POST['servicetypeid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($facilityID)&&(!empty($facilityID))) && (isset($facilityTypeID)&&(!empty($facilityTypeID))) && 
+		(isset($contactID)&&(!empty($contactID))) && (isset($facilityStatusID)&&(!empty($facilityStatusID))) && 
+		(isset($serviceTypeID)&&(!empty($serviceTypeID))) &&
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call updateFacility('$facilityID' ,'$facilityTypeID', '$contactID', '$facilityStatusID', '$serviceTypeID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg="Facility updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+		}
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		
+		
+});
+$route ->add('/updateFacilityContact', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+   $ContactID = trim($_POST['contactid']);
+   $ContactEmail = trim($_POST['contactemail']);
+   $phoneNumber = trim($_POST['phonenumber']);
+   $Surename = trim($_POST['surname']);
+   $FirstName = trim($_POST['firstname']);
+   $MiddleName = trim($_POST['middlename']);
+   $Username = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+    if(isset($ContactID)&&(!empty($ContactID))&&(isset($ContactEmail)&&(!empty($ContactEmail))) &&
+	  (isset($phoneNumber)&&(!empty($phoneNumber)))&&(isset($Surename)&&(!empty($Surename))) &&
+	  (isset($FirstName)&&(!empty($FirstName)))&&(isset($MiddleName)&&(!empty($MiddleName)))&&
+	  (isset($Username)&&(!empty($Username)))&&(isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			         $query = "CALL updateFacilityContact('$ContactID','$ContactEmail',
+			                                       '$phoneNumber','$Surename','$FirstName',
+												   '$MiddleName','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Facility contact updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+          }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+		}
+                                $preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=> $result
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		     
+});
+$route ->add('/updateFrequencyOfMeasures', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+   $FrequencyID = trim($_POST['frequencyid']);
+   $Description = trim($_POST['description']);
+   $EffectiveStartDate = trim($_POST['effectivestartdate']);
+   $EffectiveEndDate = trim($_POST['effectiveenddate']);
+   $Username = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+    if(isset($FrequencyID)&&(!empty($FrequencyID))&&(isset($Description)&&(!empty($Description)))&&
+	  (isset($EffectiveStartDate)&&(!empty($EffectiveStartDate)))&&(isset($EffectiveEndDate)&&(!empty($EffectiveEndDate)))&&
+	  (isset($Username)&&(!empty($Username)))&&(isset($permission)&&(!empty($permission)))){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL updateFrequencyOfMeasures('$FrequencyID','$Description',
+			                                       '$EffectiveStartDate','$EffectiveEndDate',
+												   '$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Frequency Of Measures updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+                        $preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=> $result
+					);
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		    
+});
+$route ->add('/updateHumanRespondents', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+   $HumanID = trim($_POST['humanid']);
+   $Surname = trim($_POST['surname']);
+   $middleName = trim($_POST['middlename']);
+   $FirstName = trim($_POST['firstname']);
+   $DateOfBirth = trim($_POST['dateofbirth']);
+   $Sex = trim($_POST['sex']);
+   $maritalID = trim($_POST['maritalid']);
+   $UserName = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+    if(isset($HumanID)&&(!empty($HumanID))&&(isset($Surname)&&(!empty($Surname)))&&
+	  (isset($middleName)&&(!empty($middleName)))&&(isset($FirstName)&&(!empty($FirstName)))&&
+	  (isset($DateOfBirth)&&(!empty($DateOfBirth)))&&(isset($Sex)&&(!empty($Sex)))&&
+	  (isset($maritalID)&&(!empty($maritalID)))&&(isset($UserName)&&(!empty($UserName)))&&
+	  (isset($permission)&&(!empty($permission)))){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL updateHumanRespondents('$HumanID','$Surname',
+			                                       '$middleName','$FirstName','$DateOfBirth',
+												   '$Sex','$maritalID','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			 $msg = "Human respondents updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 215;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 211;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=> $result
+					 );
+	
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		   
+});
+$route ->add('/updateIndicatorClass', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+   $IndicatorClassID = trim($_POST['indicatorclassid']);
+   $Description = trim($_POST['description']);
+   $UserName = trim($_POST['username']);
+   $permission = trim($_POST['permission']);
+   
+    if(isset($IndicatorClassID)&&(!empty($IndicatorClassID))&&(isset($Description)&&(!empty($Description)))
+	    &&(isset($UserName)&&(!empty($UserName)))&&(isset($permission)&&(!empty($permission)))){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL updateIndicatorClass('$IndicatorClassID','$Description','$UserName','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			  $msg = "Indicator Class Id Updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 215;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 211;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		     
+});
+$route ->add('/updateIndicators', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+	$indicatorID = trim($_POST['indicatorid']);
+	$name = trim($_POST['name']);
+	$indicatorStatusID = trim($_POST['indicatorstatusid']);
+	$indicatorClassID = trim($_POST['indicatorclassid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($indicatorID)&&(!empty($indicatorID))) && (isset($name)&&(!empty($name))) && 
+		(isset($indicatorStatusID)&&(!empty($indicatorStatusID))) && (isset($indicatorClassID)&&(!empty($indicatorClassID))) &&
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call updateIndicators('$indicatorID' ,'$name', '$indicatorStatusID', '$indicatorClassID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg="Indicators updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		
+});
+$route ->add('/updateMeasures', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+	$scheduleID = trim($_POST['scheduleid']);
+	$questionID = trim($_POST['questionid']);
+	$indicatorID = trim($_POST['indicatorid']);
+	$dateOfMeasurement = trim($_POST['dateofmeasurement']);
+	$collectedOn = trim($_POST['collectedon']);
+	$collectedBy = trim($_POST['collectedby']);
+	$teamID = trim($_POST['teamid']);
+	$score = trim($_POST['score']);
+	$respondentID = trim($_POST['respondentid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($scheduleID)&&(!empty($scheduleID))) && (isset($questionID)&&(!empty($questionID))) && 
+		(isset($indicatorID)&&(!empty($indicatorID))) && (isset($dateOfMeasurement)&&(!empty($dateOfMeasurement))) &&
+		(isset($collectedOn)&&(!empty($collectedOn))) && (isset($collectedBy)&&(!empty($collectedBy))) && 
+		(isset($teamID)&&(!empty($teamID))) && (isset($score)&&(!empty($score))) && 
+		(isset($respondentID)&&(!empty($respondentID))) && 
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call updateMeasures('$scheduleID' ,'$questionID', '$indicatorID', '$dateOfMeasurement','$collectedOn','$collectedBy','$teamID','$score','$respondentID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Measures updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		
+		
+});
+$route ->add('/updateQuestions', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+	$questionID = trim($_POST['questionid']);
+	$indicatorID = trim($_POST['indicatorid']);
+	$questionStatusID = trim($_POST['questionstatusid']);
+	$description = trim($_POST['description']);
+	$instruction = trim($_POST['instruction']);
+	$hint = trim($_POST['hint']);
+	$typeID = trim($_POST['typeid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($questionID)&&(!empty($questionID))) && (isset($indicatorID)&&(!empty($indicatorID))) && 
+		(isset($questionStatusID)&&(!empty($questionStatusID))) && (isset($description)&&(!empty($description))) &&
+		(isset($instruction)&&(!empty($instruction))) && (isset($hint)&&(!empty($hint))) && 
+		(isset($typeID)&&(!empty($typeID))) &&  
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			        $query="call updateQuestions('$questionID', '$indicatorID', 'questionStatusID', '$description', '$instruction','$hint', '$typeID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg="Questions updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);
+	echo json_encode($preload);
+	
+});
+$route ->add('/updateRespondent', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+	$respondentID = trim($_POST['respondentid']);
+	$description = trim($_POST['description']);
+	$facilityID = trim($_POST['facilityid']);
+	$humanID = trim($_POST['humanid']);
+	$username = trim($_POST['username']);
+	$permission = trim($_POST['permission']);
+	
+	if( (isset($respondentID)&&(!empty($respondentID))) && (isset($description)&&(!empty($description))) && 
+		(isset($facilityID)&&(!empty($facilityID))) && (isset($humanID)&&(!empty($humanID))) &&
+		(isset($username)&&(!empty($username))) && (isset($permission)&&(!empty($permission))) ){
+		 try{
+			$conn = new tblQuery();
+			 try{
+			       $query="call updateRespondent('$respondentID', '$description', '$facilityID', '$humanID', '$username', '$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg="Respondent updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        }else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		
+});
+$route ->add('/updateScheduleActiveIndicator', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+		  $ScheduleID = trim($_POST['scheduleid']);
+		  $QuestionID = trim($_POST['questionid']);
+		  $IndicatorStatusID = trim($_POST['indicatorstatusid']);
+		  $IndicatorID = trim($_POST['indicatorid']);
+		  $StartDate = trim($_POST['startdate']);
+		  $EndDate = trim($_POST['enddate']);
+		  $MinimumScoreValue = trim($_POST['minimumscorevalue']);
+		  $MaximumScoreValue = trim($_POST['maximumscorevalue']);
+		  $FrequencyID = trim($_POST['frequencyid']);
+		  $MethodOfMeasureID = trim($_POST['methodofmeasureid']);
+		  $Username = trim($_POST['username']);
+		  $permission = trim($_POST['permission']);
+ if((isset($ScheduleID)&&(!empty($ScheduleID))) && (isset($QuestionID)&&(!empty($QuestionID))) && (isset($IndicatorStatusID)&&(!empty($IndicatorStatusID))) && (isset($IndicatorID)&&(!empty($IndicatorID))) &&
+    (isset($StartDate)&&(!empty($StartDate))) && (isset($EndDate)&&(!empty($EndDate))) && (isset($MinimumScoreValue)&&(!empty($MinimumScoreValue))) &&(isset($MaximumScoreValue)&&(!empty($MaximumScoreValue))) && (isset($FrequencyID)&&(!empty($FrequencyID))))
+     {
+ 
+            try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL updateScheduleActiveIndicator('$ScheduleID','$QuestionID','$IndicatorStatusID',
+		                                              '$IndicatorID','$StartDate','$EndDate',
+													  '$MinimumScoreValue','$MaximumScoreValue','$FrequencyID',
+													  '$MethodOfMeasureID','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Schedule Active Indicator updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+  
+});
+$route ->add('/updateTeam', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+
+ $TeamID = trim($_POST['teamid']);
+ $Description = trim($_POST['description']);
+ $Username = trim($_POST['username']);
+ $permission = trim($_POST['permission']);
+  if((isset($TeamID)&&(!empty($TeamID)))&&(isset($Description)&&(!empty($Description)))&&(isset($Username)&&(!empty($Username)))&&(isset($permission)&&(!empty($permission)))){ 
+  try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "CALL updateTeam('$TeamID','$Description','$Username','$permission')";
+					$result = $conn->dbLink()->query($query);
+					if($result){
+			$status = 200;
+			$msg = "Team updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		 
+});
+$route ->add('/updateTeamMember', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+   $TeamID = trim($_POST['teamid']);
+   $Username = trim($_POST['username']);
+   $TeamLead = trim($_POST['teamlead']);
+   $ModifiedBy = trim($_POST['modifiedby']);
+   $permission = trim($_POST['permission']);
+   if((isset($TeamID)&&(!empty($TeamID)))&&(isset($Username)&&(!empty($Username)))&&(isset($TeamLead)&&(!empty($TeamLead)))&&(isset($ModifiedBy)&&(!empty($ModifiedBy)))&&(isset($permission)&&(!empty($permission)))){ 
+	 try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "updateTeamMember('$TeamID','$Username','$TeamLead',
+			                                '$ModifiedBy','$permission')";
+					$result = $conn->proCallNoValue($query);
+					if($result){
+			$status = 200;
+			$msg = "Team Member updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+	        
+			
+});
+$route ->add('/updateTeamRespondents', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include'includes/connection.php';
+  $RespondentID = trim($_POST['respondentid']);
+  $TeamID = trim($_POST['teamid']);
+  $UserName  = trim($_POST['username']);
+  $permission  = trim($_POST['permission']);
+  $result = "error";
+//$status = 'this is updateTeamRespondents method';  
+if((isset($RespondentID)&&(!empty($RespondentID)))&&(isset($TeamID)&&(!empty($TeamID)))&&(isset($UserName)&&(!empty($UserName)))&&(isset($permission)&&(!empty($permission)))){
+	       try{
+			$conn = new tblQuery();
+			 try{
+			       $query = "updateTeamRespondents('$RespondentID','$TeamID','$UserName','$permission')";
+					$result = $conn->proCallNoValue($query);
+					if($result){
+			$status = 200;
+			$msg = "Team Respondents updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+	}
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+		 
+});
+$route ->add('/updateUserRole', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+****************************************************************/
+include 'includes/connection.php';
+  $RoleID = trim($_POST['roleid']);
+  $Description = trim($_POST['description']);
+  $UserName  = trim($_POST['username']);
+  $permission  = trim($_POST['permission']);
+  $result = "error";
+//$status = 'this is updateTeamRespondents method';  
+if((isset($RoleID)&&(!empty($RoleID)))&&(isset($Description)&&(!empty($Description)))&&(isset($UserName)&&(!empty($UserName)))&&(isset($permission)&&(!empty($permission)))){
+ try{
+			$conn = new tblQuery();
+			 try{
+			        $query = "updateUserRole('$RoleID','$Description','$UserName','$permission')"; 
+					$result = $conn->proCallNoValue($query);
+					if($result){
+			$status = 200;
+			$msg = "User role updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+                       
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+        
+	}
+        
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+                
+        }
+	$preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+	if(isset($conn))        
+            mysqli_close($conn);	
+	echo json_encode($preload);
+    
+	     
+}); 
+
+$route ->add('/updateUsers', function(){
+/***************************************************************
+ToDo, capture your data and implement your business method here
+*This function update existing user information
+***************************************************************/
+include'includes/connection.php';
+  $Username = trim($_POST['username']);
+  $Surname = trim($_POST['surname']);
+  $FirstName  = trim($_POST['firstname']);
+  $SourceID  = trim($_POST['sourceid']);
+  $RoleID  = trim($_POST['roleid']);
+  $ModifiedBy = trim($_POST['modifiedby']);
+  $permission = trim($_POST['permission']);
+//$status = 'this is updateTeamRespondents method'; 
+	if((isset($Username)&&(!empty($Username)))&&(isset($Surname)&&(!empty($Surname)))&&(isset($FirstName)&&(!empty($FirstName)))&&(isset($SourceID)&&(!empty($SourceID)))&&(isset($RoleID)&&(!empty($RoleID)))&&(isset($ModifiedBy)&&(!empty($ModifiedBy)))&&(isset($permission)&&(!empty($permission)))){
+     try{
+			//$conn = new dbConnect();
+                        $conn = new tblQuery();
+			 try{
+			       // $query = " CALL updateUsers('$Username','$Surname','$FirstName','$SourceID','$RoleID','$ModifiedBy', '$permission')";
+				//	$result = $conn->dbLink()->query($query);
+                             $methodName = "updateUsers('$Username', '$Surname', '$FirstName', '$SourceID', '$RoleID', '$ModifiedBy', '$permission')";
+			$result = $conn->proCallNoValue($methodName);
+                        
+			if($result){
+			$status = 200;
+			$msg = "User updated successfully";
+			}else{
+				 throw new Exception("Procedure call failed");
+				}
+			}catch(Exception $e){
+			$status = 503;
+			$msg = "Database query failed.  ". substr($e,10,150)."...";                        $result = NULL;
+                        $result = NULL;
+			}
+	}catch(Exception $e){
+	$status = 500;
+	$msg = "Database Connection failed.  ". substr($e,10,150)."...";
+        $result = NULL;
+	}
+	}else{
+		$status = 204;
+		$msg = 'No Content: one or two fields are empty';
+                $result = NULL;
+        }
+                            $preload = array(
+					 "status"=> $status,
+					 "message"=> $msg,
+                                         "response"=>$result
+					 );
+         if(isset($conn))        mysqli_close($conn);	
+	echo json_encode($preload);
+	
+});
+$route->submit();

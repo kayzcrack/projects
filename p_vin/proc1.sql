@@ -1,0 +1,573 @@
+DELIMITER //
+DROP PROCEDURE IF EXISTS addStudent // 
+CREATE PROCEDURE addStudent(IN in_SurName Varchar(128),
+							IN in_FirstName VARCHAR(128), IN in_OtherNames VARCHAR(128),
+							IN in_Sex CHAR(1), IN in_Dob DATE, IN in_FacultyID VARCHAR(16),
+							IN in_DeptID VARCHAR(16),IN in_LevelID VARCHAR(16),
+							IN in_Address VARCHAR(255),IN in_Country VARCHAR(32), IN in_State VARCHAR(32),
+							IN in_Lga VARCHAR(32), IN in_Image LONGBLOB)
+BEGIN 
+		SET @studentid = makeSDIN(in_SurName);
+		INSERT INTO Student 
+			 VALUES(@studentid,in_SurName,in_FirstName,in_OtherNames,in_Sex,in_Dob,in_FacultyID,
+					in_DeptID,in_LevelID,in_Address,in_Country,in_State,in_Lga,in_Image )
+ON DUPLICATE KEY UPDATE
+Surname = in_SurName,FirstName = in_FirstName, OtherNames = in_OtherNames,
+Sex = in_Sex, DOB = in_Dob, FacultyID = in_FacultyID, DeptID = in_DeptID, LevelID = in_LevelID,
+Address = in_Address,Country = in_Country, State = in_State, LGA = in_Lga, Image = in_Image;
+END //
+DELIMITER ;
+
+-- ===========================================================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS updateStudent // 
+CREATE PROCEDURE updateStudent(IN in_StudentID VARCHAR(16), IN in_SurName Varchar(128),
+							IN in_FirstName VARCHAR(128), IN in_OtherNames VARCHAR(128),
+							IN in_Sex CHAR(1), IN in_Dob DATE, IN in_FacultyID VARCHAR(16),
+							IN in_DeptID VARCHAR(16),IN in_LevelID VARCHAR(16),
+							IN in_Address VARCHAR(255),IN in_Country VARCHAR(32), IN in_State VARCHAR(32),
+							IN in_Lga VARCHAR(32),IN in_Image LONGBLOB)
+BEGIN 
+		INSERT INTO Student 
+			 VALUES(in_StudentID,in_SurName,in_FirstName,in_OtherNames,in_Sex,in_Dob,in_FacultyID,
+					in_DeptID,in_LevelID,in_Address,in_Country,in_State,in_Lga,in_Image)
+ON DUPLICATE KEY UPDATE
+Surname = in_SurName,FirstName = in_FirstName, OtherNames = in_OtherNames,
+Sex = in_Sex, DOB = in_Dob, FacultyID = in_FacultyID, DeptID = in_DeptID, LevelID = in_LevelID,
+Address = in_Address,Country = in_Country, State = in_State, LGA = in_Lga, Image = in_Image;
+END //
+DELIMITER ;
+
+-- ==============================================================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS addStaff ##
+CREATE PROCEDURE addStaff(IN In_Salutation varchar(5),IN In_SurName varchar(128),IN In_FirstName varchar(128),
+IN In_OtherNames varchar(128),IN In_Sex char(1),IN in_FacultyID varchar(16), IN in_DeptID varchar(16),
+IN In_Position varchar(32),IN In_Email varchar(32),IN in_Address varchar(255), IN in_Country varchar(32), IN in_State varchar(32), IN in_Lga varchar(32), IN in_Image LONGBLOB)
+BEGIN 
+	SET @staffid = makeSTIN(in_SurName);
+	INSERT INTO Staff(Salutation,StaffID,SurName,FirstName,OtherNames,Sex,FacultyID,DeptID,Position,Email,Address,Country,State,Lga, Image)
+	VALUES(In_Salutation,@staffid,In_SurName,In_FirstName,In_OtherNames,In_Sex,in_FacultyID,in_DeptID,In_Position,In_Email,in_Address,in_Country,in_State,in_Lga, in_Image);
+END ##
+DELIMITER ;
+
+-- ===========================================================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS updateStaff ##
+CREATE PROCEDURE updateStaff(IN In_StaffID varchar(16),IN In_SurName varchar(128),IN In_FirstName varchar(128),
+IN In_OtherNames varchar(128),IN In_Sex char(1),IN in_FacultyID varchar(16), IN in_DeptID varchar(16),
+IN In_Position varchar(32),IN In_Email varchar(32),IN in_Address varchar(255), IN in_Country varchar(32), IN in_State varchar(32), IN in_Lga varchar(32),IN in_Image LONGBLOB)
+BEGIN 
+	INSERT INTO Staff(StaffID,SurName,FirstName,OtherNames,Sex,FacultyID,DeptID,Position,Email,Address,Country,State,Lga,Image)
+	VALUES(In_StaffID,In_SurName,In_FirstName,In_OtherNames,In_Sex,in_FacultyID,in_DeptID,In_Position,In_Email,in_Address,in_Country,in_State,in_Lga,in_Image)
+ON DUPLICATE KEY UPDATE
+Surname = in_SurName,FirstName = in_FirstName, OtherNames = in_OtherNames,
+Sex = in_Sex,FacultyID = in_FacultyID, DeptID = in_DeptID,Position = in_Position,Email = In_Email,
+	Address = in_Address,Country = in_Country, State = in_State, LGA = in_Lga, Image = in_Image;	
+END ##
+DELIMITER ;
+-- =======================================
+DELIMITER ##
+drop procedure if exists getLevel ##
+CREATE PROCEDURE getLevel()
+	BEGIN
+	SELECT LevelID,LevelName,Flag FROM Level;
+	END ##
+DELIMITER ;
+-- ======================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS addLevel ##
+CREATE PROCEDURE addLevel(IN In_LevelID varchar(16),IN In_LevelName varchar(16),IN in_Flag varchar(128))
+BEGIN 
+	INSERT INTO Level(LevelID,LevelName,Flag)
+	VALUES(In_LevelID,In_LevelName,in_Flag);
+END ##
+DELIMITER ;
+
+-- =========================================================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS getResultLevel //
+CREATE PROCEDURE getResultLevel(IN in_StudentID varchar(16))
+BEGIN
+    SELECT LevelID FROM Student
+    where StudentID = in_StudentID;
+END //
+DELIMITER ;
+-- =========================================================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountry //
+CREATE PROCEDURE getCountry()
+BEGIN
+    SELECT * FROM Country WHERE CountryCode = "NGA"; 
+END //
+DELIMITER ;
+
+-- ======================================================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAULevel1 //
+CREATE PROCEDURE getAULevel1()
+BEGIN
+    SELECT * FROM AULevel1 where CountryCode = "NGA";
+END //
+DELIMITER ;
+-- -- =======================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAULevel2 //
+CREATE PROCEDURE getAULevel2()
+BEGIN
+    SELECT * FROM AULevel2 where CountryCode = "NGA";
+END //
+DELIMITER ;
+-- =====================================
+DELIMITER ##
+drop procedure if exists getStudent ##
+CREATE PROCEDURE getStudent(IN in_StudentID VARCHAR(16))
+	BEGIN
+	SELECT StudentID, SurName,FirstName,Othernames,Sex,DOB,
+	FacultyID,DeptID,LevelID,Address,Country,State,LGA, Image FROM Student
+	WHERE StudentID = in_StudentID;
+	END ##
+DELIMITER ;
+
+-- ====================================
+DELIMITER ##
+drop procedure if exists getStaff ##
+CREATE PROCEDURE getStaff(IN in_StaffID varchar(16))
+	BEGIN
+	SELECT *
+	FROM Staff WHERE StaffID = in_StaffID;
+	END ##
+DELIMITER ;
+-- ====================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS loadStaff //
+CREATE PROCEDURE loadStaff()
+BEGIN
+	SELECT SurName, FirstName, FacultyID, DeptID 
+	FROM Staff;
+END //
+DELIMITER ;
+-- ==================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS loadStudent //
+CREATE PROCEDURE loadStudent()
+BEGIN
+	SELECT StudentID,SurName, FirstName, FacultyID, DeptID, LevelID
+	FROM Student;
+END //
+DELIMITER ;
+-- ==================================
+DELIMITER ##
+drop procedure if exists getFac ##
+CREATE PROCEDURE getFac(IN In_FacultyID VARCHAR(16))
+	BEGIN
+	SELECT FacultyID,FacultyName,Description
+	FROM Faculty
+	WHERE FacultyID = In_FacultyID;
+	END ##
+DELIMITER ;
+-- ==================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS addCourse ##
+CREATE PROCEDURE addCourse(IN In_CourseID varchar(16),IN In_CourseName varchar(128),IN In_CourseHours INT,IN In_LevelID Varchar(16),
+IN in_SemesterID varchar(16),IN In_CourseDescription varchar(128))
+BEGIN 
+	INSERT INTO Course(CourseID,CourseName,CourseHours,LevelID,StaffID,CourseDescription)
+	VALUES(In_CourseID,In_CourseName,In_CourseHours,In_LevelID,in_SemesterID,In_CourseDescription)
+	ON DUPLICATE KEY UPDATE
+	CourseID = In_CourseID, CourseName = In_CourseName, CourseHours = In_CourseHours, LevelID = In_LevelID, SemesterID = In_SemesterID,
+	CourseDescription = In_CourseDescription;
+END ##
+DELIMITER ;
+
+-- ==================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS addDepartment ##
+CREATE PROCEDURE addDepartment(IN In_DeptID varchar(16),IN In_DeptName varchar(128),IN In_FacultyID varchar(16),IN In_Description varchar(255))
+BEGIN 
+	INSERT INTO Department(DeptID,DeptName,FacultyID,Description)
+	VALUES(In_DeptID,In_DeptName,In_FacultyID,In_Description)
+	ON DUPLICATE KEY UPDATE
+	DeptID = In_DeptID, DeptName = In_DeptName, FacultyID = In_FacultyID, Description = In_Description;
+END ##
+DELIMITER ;
+-- ================================
+DELIMITER ##
+drop procedure if exists getDepartment ##
+CREATE PROCEDURE getDepartment(IN In_DeptID Varchar(16))
+	BEGIN
+	SELECT DeptID,DeptName,FacultyID,Description
+	FROM Department
+	WHERE DeptID = In_DeptID;
+	END ##
+DELIMITER ;
+-- ================================
+DELIMITER ##
+drop procedure if exists getAllDepartment ##
+CREATE PROCEDURE getAllDepartment()
+	BEGIN
+	SELECT a.DeptID as Code,a.DeptName as Name,b.FacultyName as Faculty,a.Description
+	FROM Department a
+	LEFT JOIN Faculty b ON a.FacultyID = b.FacultyID;
+	END ##
+DELIMITER ;
+-- ==============================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS addCourse ##
+CREATE PROCEDURE addCourse(IN In_CourseID varchar(16),IN In_CourseName varchar(128),IN In_CourseHours INT,IN In_LevelID Varchar(16),
+IN In_SemesterID Varchar(16), IN in_StaffID varchar(16),IN In_CourseDescription varchar(128))
+BEGIN 
+	INSERT INTO Course(CourseID,CourseName,CourseHours,LevelID,SemesterID,StaffID,CourseDescription)
+	VALUES(In_CourseID,In_CourseName,In_CourseHours,In_LevelID,In_SemesterID,In_StaffID,In_CourseDescription)
+ON DUPLICATE KEY UPDATE
+CourseID = In_CourseID, CourseName = In_CourseName, CourseHours = In_CourseHours, LevelID = In_LevelID,
+SemesterID = In_SemesterID, StaffID = In_StaffID,CourseDescription = In_CourseDescription;
+END ##
+DELIMITER ;
+-- ==================================
+DELIMITER ##
+drop procedure if exists getAllStaff ##
+CREATE PROCEDURE getAllStaff()
+	BEGIN
+	SELECT StaffID, CONCAT(SurName, '  ' ,FirstName) NAME FROM Staff;
+	END ##
+DELIMITER ;
+-- ====================================
+DELIMITER ##
+drop procedure if exists getSemester ##
+CREATE PROCEDURE getSemester()
+	BEGIN
+	SELECT SemesterID,SemesterName,StartDate,EndDate FROM Semester;
+	END ##
+DELIMITER ;
+-- ====================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS loadCourse //
+CREATE PROCEDURE loadCourse()
+BEGIN
+	SELECT A.CourseID, A.CourseName, A.LevelID, A.CourseHours, CONCAT(B.SurName, ' ' ,B.FirstName) NAME
+	FROM Course A
+	LEFT JOIN Staff B ON A.StaffID = B.StaffID;
+END //
+DELIMITER ;
+
+-- ===================================
+DELIMITER ##
+drop procedure if exists getCourse ##
+CREATE PROCEDURE getCourse(IN In_CourseID Varchar(16))
+	BEGIN
+	SELECT CourseID,CourseName,CourseHours,LevelID,SemesterID,StaffID,CourseDescription
+	FROM Course
+	WHERE CourseID = In_CourseID;
+	END ##
+DELIMITER ;
+-- ====================================
+DELIMITER ##
+drop procedure if exists getAllCourse ##
+CREATE PROCEDURE getAllCourse()
+	BEGIN
+	SELECT CourseID,CourseName,CourseHours,LevelID,SemesterID,StaffID,CourseDescription
+	FROM Course;
+	END ##
+DELIMITER ;
+-- ================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS searchCourse //
+CREATE PROCEDURE searchCourse(IN in_LevelID VARCHAR(16), IN in_SemesterID VARCHAR(16))
+BEGIN   
+
+   IF in_LevelID = "select" AND in_SemesterID = "select" THEN
+		SELECT CourseID, CourseName, CourseHours, LevelID, SemesterID, StaffID, CourseDescription
+		FROM Course;
+   ELSE
+   
+   IF in_LevelID != "" AND in_SemesterID = "select" THEN
+		SELECT CourseID, CourseName, CourseHours, LevelID, SemesterID, StaffID, CourseDescription
+		FROM Course
+		WHERE LevelID = in_LevelID;
+	ELSE
+	
+	IF  in_LevelID = "select" AND in_SemesterID != "" THEN
+			SELECT CourseID, CourseName, CourseHours, LevelID, SemesterID, StaffID, CourseDescription
+			FROM Course
+			WHERE SemesterID = in_SemesterID;
+	ELSE
+	
+	IF in_LevelID != "" AND in_SemesterID != "" THEN
+		SELECT CourseID, CourseName, CourseHours, LevelID, SemesterID, StaffID, CourseDescription
+		FROM Course
+		WHERE LevelID = in_LevelID AND SemesterID = in_SemesterID;
+	ELSE
+		SELECT CourseID, CourseName, CourseHours, LevelID, SemesterID, StaffID, CourseDescription
+		FROM Course;
+	END IF;
+		END IF;
+			END IF;
+				END IF;
+END //
+DELIMITER ;
+
+-- ===================================================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS addStudentSubject // 
+CREATE PROCEDURE addStudentSubject(IN in_StudentID VARCHAR(16),IN in_CourseID VARCHAR(16),IN in_SemesterID Varchar(16), IN in_LevelID Varchar(16))
+BEGIN
+	IF(checkLimit(in_StudentID, in_CourseID)) THEN
+				IF(checkCourse(in_StudentID,in_SemesterID,in_LevelID)) THEN
+					INSERT INTO StudentSubject(StudentID, CourseID)
+					VALUES (in_StudentID, in_CourseID);
+	ELSE
+	
+				SIGNAL SQLSTATE '45000'
+				SET MESSAGE_TEXT =  '-45000: Check: Cant Register More Than 5 Courses Per Semester';
+	END IF;
+	
+	ELSE
+					SIGNAL SQLSTATE '45000'
+					SET MESSAGE_TEXT =  '-45000: Check: Student Already Added This Course';
+	END IF;
+END //
+DELIMITER ;
+-- ===============================================================
+DELIMITER // 
+DROP FUNCTION IF EXISTS checkCourse //
+CREATE FUNCTION checkCourse(in_StudentID VARCHAR(16),in_SemesterID Varchar(16),in_LevelID Varchar(16))
+RETURNS INT READS SQL DATA
+DETERMINISTIC 
+BEGIN
+     DECLARE MAX INT;
+     DECLARE LAST INT;
+	 SET MAX = 5;
+	 SET LAST = 0;
+	
+	SET @BEN = (SELECT COUNT(StudentID) FROM StudentSubject a
+	LEFT JOIN Course b ON a.CourseID = b.CourseID
+	WHERE a.StudentID = in_StudentID AND b.SemesterID = in_SemesterID AND b.LevelID = in_LevelID);
+	
+    IF @BEN > MAX THEN
+    SET LAST = 0;
+    END IF;
+    
+    IF @BEN < MAX THEN
+    SET LAST = 1;
+    END IF;
+    
+    RETURN LAST;
+END //
+DELIMITER ;
+
+-- ==============================================
+DELIMITER // 
+DROP FUNCTION IF EXISTS checkLimit //
+CREATE FUNCTION checkLimit(in_StudentID VARCHAR(16), in_CourseID VARCHAR(16))
+RETURNS INT READS SQL DATA
+DETERMINISTIC 
+BEGIN
+     DECLARE MIN INT;
+     DECLARE LAST INT;
+     SET MIN = 1;
+     SET @BEN = (SELECT COUNT(CourseID) FROM StudentSubject WHERE StudentID = in_StudentID AND CourseID = in_CourseID);
+     IF @BEN < MIN THEN
+     SET LAST = 1;
+     END IF;
+     
+     IF @BEN > 1 THEN
+     SET LAST = 0;
+     END IF;
+     RETURN LAST;
+END //
+DELIMITER ;
+
+-- =====================================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS getStudentSubject //
+CREATE PROCEDURE getStudentSubject(IN in_StudentID VARCHAR(16),IN in_LevelID Varchar(16), IN in_SemesterID Varchar(16))
+BEGIN
+  IF in_LevelID = "select" AND in_SemesterID = "select" THEN
+  SELECT a.StudentID,concat(b.SurName,'  ' ,b.FirstName, '  ',OtherNames) Name, a.CourseID, c.CourseName, c.CourseHours,c.LevelID,c.SemesterID
+  FROM StudentSubject a
+  left join Student b on a.StudentID = b.StudentID
+  left join Course c on a.CourseID = c.CourseID
+  WHERE a.StudentID = in_StudentID;
+  
+  ELSE
+  
+  IF in_LevelID != "" AND in_SemesterID = "select" THEN
+  SELECT a.StudentID,concat(b.SurName,'  ' ,b.FirstName, '  ',OtherNames) Name, a.CourseID, c.CourseName, c.CourseHours,c.LevelID,c.SemesterID
+  FROM StudentSubject a
+  left join Student b on a.StudentID = b.StudentID
+  left join Course c on a.CourseID = c.CourseID
+  WHERE a.StudentID = in_StudentID AND c.LevelID = in_LevelID;
+  
+  ELSE
+  
+  IF  in_LevelID = "select" AND in_SemesterID != "" THEN
+  SELECT a.StudentID,concat(b.SurName,'  ' ,b.FirstName, '  ',OtherNames) Name, a.CourseID, c.CourseName, c.CourseHours,c.LevelID,c.SemesterID
+  FROM StudentSubject a
+  left join Student b on a.StudentID = b.StudentID
+  left join Course c on a.CourseID = c.CourseID
+  WHERE a.StudentID = in_StudentID AND c.SemesterID = in_SemesterID;
+  
+  ELSE
+  
+  IF in_LevelID != "" AND in_SemesterID != "" THEN
+  SELECT a.StudentID,concat(b.SurName,'  ' ,b.FirstName, '  ',OtherNames) Name, a.CourseID, c.CourseName, c.CourseHours,c.LevelID,c.SemesterID
+  FROM StudentSubject a
+  left join Student b on a.StudentID = b.StudentID
+  left join Course c on a.CourseID = c.CourseID
+  WHERE a.StudentID = in_StudentID AND c.LevelID = in_LevelID AND c.SemesterID = in_SemesterID;
+  
+  ELSE
+  
+  SELECT a.StudentID,concat(b.SurName,'  ' ,b.FirstName, '  ',OtherNames) Name, a.CourseID, c.CourseName, c.CourseHours,c.LevelID,c.SemesterID
+  FROM StudentSubject a
+  left join Student b on a.StudentID = b.StudentID
+  left join Course c on a.CourseID = c.CourseID
+  WHERE a.StudentID = in_StudentID;
+  
+  END IF;
+	END IF;
+		END IF;
+			END IF;
+ 
+END //
+DELIMITER ;
+
+-- ==================================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS getResultSubject //
+CREATE PROCEDURE getResultSubject(IN in_StudentID VARCHAR(16),IN in_LevelID Varchar(16), IN in_SemesterID Varchar(16))
+BEGIN
+	SELECT A.CourseID, B.CourseHours
+	FROM StudentSubject A
+	LEFT JOIN Course B ON A.CourseID = B.CourseID
+	WHERE A.StudentID = in_StudentID AND B.LevelID = in_LevelID AND B.SemesterID = in_SemesterID;
+END //
+DELIMITER ;
+-- ==============================================
+DELIMITER // 
+DROP PROCEDURE IF EXISTS addResult //
+CREATE PROCEDURE addResult(IN in_StudentID VARCHAR(16),IN in_CourseID Varchar(16),IN in_Score INT,IN in_Grade Char(1),IN in_LevelID Varchar(16), IN in_SemesterID Varchar(16))
+BEGIN
+	INSERT INTO Result(StudentID,CourseID,Score,Grade,LevelID,SemesterID)
+	VALUES(in_StudentID,in_CourseID,in_Score,in_Grade,in_LevelID,in_SemesterID);
+END //
+DELIMITER ;
+-- -------------------------
+DELIMITER // 
+DROP function IF EXISTS grdval //
+CREATE function grdval(in_Name CHAR(1)) RETURNS INT DETERMINISTIC
+BEGIN
+	Set @constant=(Select Value from Constant where Name=in_Name);
+	RETURN @constant;
+END //
+DELIMITER ;
+-- -------------------------
+DELIMITER // 
+DROP function IF EXISTS courseval //
+CREATE function courseval(in_Course VARCHAR(16)) RETURNS INT DETERMINISTIC
+BEGIN
+	
+	Set @constant=(select c.CourseHours from Course c Left Join Result r ON r.CourseID=c.CourseID where r.CourseID=in_Course);
+	RETURN @constant;
+END //
+DELIMITER ;
+-- ==============================================
+delimiter // 
+
+drop procedure if exists calc_result //
+
+create procedure  calc_result(IN in_StudentID varchar(16),IN in_LevelID VARCHAR(16),IN in_SemesterID VARCHAR(16))
+begin
+ 
+	Set @courseload =(Select IFNULL(SUM(c.CourseHours),0) from StudentSubject ss 
+	LEFT JOIN Course c on c.CourseID=ss.CourseID 
+	where ss.StudentID= in_StudentID and c.LevelID= in_LevelID and c.SemesterID= in_SemesterID);
+
+    Set @formula=(select(sum(courseval(r.CourseID)*grdval(r.Grade))) from Result r 
+	Where r.StudentID= in_StudentID and r.LevelID= in_LevelID and r.SemesterID= in_SemesterID);
+
+    Set @gpa=(@formula/@courseload);
+
+	Insert Into GPA (StudentID,LevelID,SemesterID,GPA)
+	Values (in_StudentID,in_LevelID,in_SemesterID,(ROUND(@gpa,2)))
+	ON DUPLICATE KEY UPDATE StudentID=in_StudentID,LevelID=in_LevelID,SemesterID=in_SemesterID,GPA=(ROUND(@gpa,2));
+
+	Select (ROUND(@gpa,2)) as GPA,in_StudentID AS StudentID;
+end //
+delimiter ;
+-- =======================================
+DELIMITER //
+DROP FUNCTION IF EXISTS `authenticateUser` //
+CREATE FUNCTION `authenticateUser`(in_user VARCHAR(16), in_Password VARCHAR(255)) RETURNS tinyint(1)
+DETERMINISTIC
+BEGIN
+    RETURN 
+	(SELECT COUNT(*)
+	   FROM `User`
+	  WHERE `User`=in_user AND `Password`=PASSWORD(in_password)) ;
+END //
+DELIMITER ;         
+-- =======================================
+DELIMITER //
+DROP PROCEDURE IF EXISTS loginUser //
+CREATE PROCEDURE `loginUser`(in_userName VARCHAR(16),in_Password VARCHAR(255))
+BEGIN
+	
+	IF(authenticateUser(in_userName,in_Password)) THEN
+		BEGIN
+			DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN
+				ROLLBACK;
+				SIGNAL SQLSTATE '45000'
+				SET MESSAGE_TEXT =  '-45000: loginUser: Error logging in';			
+			END;
+			START TRANSACTION;
+			
+			UPDATE UserLogin SET LogoutTime=NOW() WHERE `User`=in_userName AND LogoutTime IS NULL ;
+				INSERT INTO UserLogin(`User`,LoginTime)
+				VALUES (in_userName,NOW());
+			-- CALL getPermissionsForUser(in_userName);
+				COMMIT;
+		END;
+	ELSE
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT =  '-45000: loginUser: Authentication failed';
+	END IF;
+END  //
+DELIMITER ;
+-- ====================================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS getUser ##
+CREATE PROCEDURE getUser(IN In_User varchar(16), IN In_Password varchar(255))
+	BEGIN
+	SELECT User,Surname,Othernames,RoleID,Password
+	FROM User
+	WHERE User = In_User and Password = password(In_Password);
+	call loginUser(In_User,In_Password);
+	END ##
+DELIMITER ;
+
+
+-- ===================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS loadStaff1 ##
+create procedure loadStaff1()
+begin
+select s.Salutation,s.StaffID,s.Surname,s.Firstname,s.Othernames,s.Sex,f.FacultyName,d.DeptName,j.Name,
+s.Email
+from Staff s
+left join Faculty f on s.FacultyID = f.FacultyID
+left join Department d on s.DeptID = d.DeptID
+left join Job j on s.Position = j.JobID
+order by s.Surname asc;
+end ##
+delimiter ;
+-- =================================
+DELIMITER ##
+DROP PROCEDURE IF EXISTS getSalutation ##
+create procedure getSalutation()
+begin
+select * from SalutationType;
+end ##
+delimiter ;
+

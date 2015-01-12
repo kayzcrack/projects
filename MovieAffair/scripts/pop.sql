@@ -1,0 +1,139 @@
+set foreign_key_checks = 0;
+truncate VideoFormat;
+set foreign_key_checks = 1;
+
+insert into VideoFormat value('wma','wma');
+insert into VideoFormat value('mp4','mp4');
+insert into VideoFormat value('3jpg','3jpg');
+insert into VideoFormat value('mpeg','mpeg');
+
+-- ------------------------------------------
+set foreign_key_checks = 0;
+truncate Constant;
+set foreign_key_checks = 1;
+
+insert into Constant values('MaximumRating','5');
+-- -----------------------------------------
+set foreign_key_checks = 0;
+truncate Category;
+set foreign_key_checks = 1;
+
+call addCategory('COM','Comedy','Entertainment consisting of Jokes and Sketches');
+call addCategory('ANI','Animation','Rapid display of a sequence of static images');
+call addCategory('EDU','Education','Learning that leads to skill and knowledge acquisition');
+call addCategory('ART','ART','Diverse range of human activities and the products of those activities');
+call addCategory('FAS','Fashion','Popular style or practice, especially in clothing,footwear,accessories, makeup etc');
+call addCategory('NAT','Nature','The phenomena of the physical world');
+call addCategory('SCI','Science and Technology','');
+call addCategory('TRA','Travel and Event','');
+call addCategory('SPO','Sport','');
+call addCategory('EXP','Experimental','');
+-- --------------------------------------
+set foreign_key_checks = 0;
+truncate Video;
+set foreign_key_checks = 1;
+
+call addVideo('Faling in love 3',2,'COM','30GB','09:53:24','mp4','SUCOM2','');
+
+call addVideo('Twelve years a slave',1,'COM','30GB','09:53:24','mp4','SUCOM2','');
+call addVideo('How i met your mother',3,'COM','30GB','09:53:24','mp4','SUCOM1','');
+call addVideo('Best of Ranoldinho',6,'SPO','30GB','09:53:24','mp4','SUSPO1','');
+
+call addVideo('Programming with C#',5,'SCI','30GB','09:00:24','mp4','SUSCI2','');
+call addVideo('How to make soap',3,'EDU','30GB','09:13:24','mp4','SUEDU1','');
+call addVideo('Transformers',6,'ANI','30GB','03:53:24','mp4','SUANI2','');
+-- -------------------------------------
+set foreign_key_checks = 0;
+truncate UserRole;
+set foreign_key_checks = 1;
+
+ call addUserRole('Admin','Administrator','');
+ call addUserRole('User','User','');
+ call addUserRole('Super','Super User','');
+-- ------------------------------------
+set foreign_key_checks = 0;
+truncate User;
+set foreign_key_checks = 1;
+
+call addUser('benni','Obot','Benny','User','pass');
+call addUser('voti','Oti','Vincent','User','pass');
+-- ----------------------------------------
+set foreign_key_checks = 0;
+truncate Tag;
+set foreign_key_checks = 1;
+
+insert into Tag values('EDU','Education');
+insert into Tag values('LEN','Learning');
+insert into Tag values('SCH','School');
+insert into Tag values('CHL','Children');
+insert into Tag values('TEC','Technology');
+insert into Tag values('STU','Students');
+insert into Tag values('LES','Lesson');
+insert into Tag values('COL','College');
+insert into Tag values('HEL','Health');
+insert into Tag values('SCI','Science');
+-- ------------------------------------------
+set foreign_key_checks = 0;
+truncate Constant;
+set foreign_key_checks = 1;
+
+insert into Constant values('MaximumRating','5');
+-- -----------------------------------------
+set foreign_key_checks = 0;
+truncate SubCategory;
+set foreign_key_checks = 1;
+
+insert into SubCategory values('SUCOM1','COM','Stand Up','Stand up comedy');
+insert into SubCategory values('SUCOM2','COM','Series','weekly series');
+insert into SubCategory values('SUCOM3','COM','Shorts','');
+insert into SubCategory values('SUCOM4','COM','Slapsticks','Stand up comedy');
+-- ----------------------------------------
+
+insert into SubCategory values('SUANI1','ANI','After Effect','');
+insert into SubCategory values('SUANI2','ANI','3D','');
+insert into SubCategory values('SUANI3','ANI','Flash','');
+insert into SubCategory values('SUANI4','ANI','Typography','');
+insert into SubCategory values('SUANI5','ANI','Computer','');
+insert into SubCategory values('SUANI6','ANI','Stop Frame','');
+-- ----------------------------------------
+insert into SubCategory values('SUEDU1','EDU','Tutorials','');
+insert into SubCategory values('SUEDU2','EDU','How-To','');
+insert into SubCategory values('SUEDU3','EDU','Computers','');
+-- ----------------------------------------
+
+insert into SubCategory values('SUART1','ART','Dancing','Dancing');
+insert into SubCategory values('SUART2','ART','Exhibition','Exhibition');
+insert into SubCategory values('SUART3','ART','Graphic Design','Graphics');
+insert into SubCategory values('SUART4','ART','Painting','Painting');
+insert into SubCategory values('SUART5','ART','Sculpture','Sculpture');
+insert into SubCategory values('SUART6','ART','Photomotion','Photomotion');
+-- ---------------------------------------
+
+insert into SubCategory values('SUFAS1','FAS','Models','Models');
+insert into SubCategory values('SUFAS2','FAS','Runway','Runway');
+insert into SubCategory values('SUFAS3','FAS','Fashion Photography','Photography');
+insert into SubCategory values('SUFAS4','FAS','Fashion Films','');
+insert into SubCategory values('SUFAS5','FAS','Street Wears','');
+-- insert into SubCategory values('SUFAS','FAS','','');
+-- insert into SubCategory values('SUFAS','FAS','','');
+-- insert into SubCategory values('SUFAS','FAS','','');
+-- insert into SubCategory values('SUFAS','FAS','','');
+-- --------------------------------------
+
+insert into SubCategory values('SUNAT1','NAT','Animals','');
+insert into SubCategory values('SUNAT2','NAT','Forest','');
+-- insert into SubCategory values('SUNAT','NAT','','');
+-- insert into SubCategory values('SUNAT','NAT','','');
+-- insert into SubCategory values('SUNAT','NAT','','');
+-- insert into SubCategory values('SUNAT','NAT','','');
+-- ------------------------------------
+
+insert into SubCategory values('SUSCI1','SCI','Chemistry','Science and technology');
+insert into SubCategory values('SUSCI2','SCI','Computer','Science and technology');
+insert into SubCategory values('SUSCI3','SCI','Programming','Science and technology');
+insert into SubCategory values('SUSCI4','SCI','Software','Science and technology');
+insert into SubCategory values('SUSCI5','SCI','Physics','Science and technology');
+-- ------------------------------------
+
+
+

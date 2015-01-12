@@ -1,0 +1,101 @@
+call addMenu('cert','Certificates');
+call addMenu('DO','Driving Offence');
+call addMenu('vio','DLC Verification');
+call addMenu('ins','Instructor');
+call addMenu('ld','Learner Driver');
+
+-- ================================
+
+call addmenuLink('ads','Assign TO Driving School','ins','#');
+call addmenuLink('ai','Assign Instructor','ds','#');
+call addmenuLink('as','Assessment','ds','handle?action=mda');
+call addmenuLink('cld','Completed Learner Drivers','vio','handle?action=dlc_view_ds');
+call addmenuLink('dsc','Driving School Certificate','cert','#');
+call addmenuLink('gor','Generate Offences report','DO','#');
+call addmenuLink('ldc','Learner Driver Certificate','cert','#');
+call addmenuLink('ma','Monthly Assessment','mo','#');
+call addmenuLink('mdo','Manage','DO','#');
+call addmenuLink('mds','Manage Driving School','ds','handle?action=mds');
+call addmenuLink('mdsu','manage users','ad','handle?action=mdsu');
+call addmenuLink('mfrsc','manage users','ad','handle?action=mfrscu');
+call addmenuLink('mi','Manage Instructors','ins','#');
+call addmenuLink('mld','Manage Learner Driver','ld','handle?action=mld');
+call addmenuLink('or','Offences Report','rep','#');
+call addmenuLink('pc','Print Certificate','ld','#');
+call addmenuLink('re','Register Equipment','ds','#');
+call addmenuLink('sr','Summary Report','rep','handle?action=vrdsr');
+call addmenuLink('th','Training Hours','ld','#');
+call addmenuLink('tr','Trainees Report','rep','handle?action=rldn');
+call addmenuLink('vio','Verify Certificate','vio','handle?action=vldt');
+call addmenuLink('viw','Registered Learner Drivers','vio','handle?action=dlc_view_reglds');
+call addmenuLink('vld','Verify L.D Certificate','rep','#');
+call addmenuLink('wr','Weekly Report','rep','#');
+
+-- ==================================
+call addRole('adm','Admin','administrator');
+call addRole('reg','registers equipment','registers new equipment');
+-- ==================================
+call addPermission('adm','Admin','ads');
+call addPermission('reg','registers equipment','re');
+
+-- ==================================
+call addUser('afysteph','oti','vincent','adm','RS1.1','password');
+call addUser('mama t','del caprio','vincente','adm','RS1.2','kayzcrack'); 
+-- ==================================
+call AddDriver('Oti','vincent','2014-11-11','0803000000','L3-H6050','kay@gmail.com','2014-11-11 00:00:00','2014-11-11 00:00:00',now(),'M','A','RS1.1',now());
+call AddDriver('akpo','philip','2014-11-11','0803011000','L3666GG1','akpo@gmail.com','2014-11-11 00:00:00','2014-11-11 00:00:00',now(),'M','C','RS1.2',now());
+call AddDriver('ekpe','jude','2014-11-11','0803000000','L3-H6050','kay@gmail.com','2014-11-11 00:00:00','2014-11-11 00:00:00',now(),'M','A','RS1.1',now());
+call AddDriver('ogar','chris','2014-11-11','0803000000','L3-H6050','kay@gmail.com','2014-11-11 00:00:00','2014-11-11 00:00:00',now(),'M','A','RS1.1',now());
+
+-- ==================================
+call addNOK('ette','johnson','CPCD/00488','bro','080300000');
+call addNOK('equo','jackson','CPCD/00559','Sis','080300000'); 
+-- =================================
+call AddSectorInstructor('RS1.1','afoma','afysteph');
+call AddSectorInstructor('RS1.2','tonia','mama t');
+call AddSectorInstructor('enomiye','john','man_j');
+-- =================================
+call addModule('A','Advance Road Etiquette: The Driver And The Road');
+call addModule('B','Nigeria High Way Code');
+call addModule('C','All In Your Hands');
+
+-- ================================
+call addModuleSubType('A','Defences driving technique'3,40);
+call addModuleSubType('A','Causes of road traffic crash',3,40);
+call addModuleSubType('A','Jouney management',3,40);
+call addModuleSubType('A','Security/Executive proctection driving techniques',3,40);
+call addModuleSubType('A','Safety guidelines on special driving conditions',3,40);
+call addModuleSubType('A','Test of understanding',3,40);
+
+
+call addModuleSubType('B','Road Signs And Surface Markings',3,30);
+call addModuleSubType('B','Sharing the road with other users',3,30);
+call addModuleSubType('B','Automobile fire handling and protection technique',3,30);
+call addModuleSubType('B','Vaehicle maintenance',3,30);
+call addModuleSubType('B','Tyre use management',3,30);
+call addModuleSubType('B','Test of understanding(score)',3,30);
+
+call addModuleSubType('C','Managing drivers health condition',3,30);
+call addModuleSubType('C','Driver/Customer/Client relationship',3,30);
+call addModuleSubType('C','Basci first aid management',3,30);
+call addModuleSubType('C','Driver and the law',3,30);
+call addModuleSubType('C','Test of understanding(score)',3,30);
+
+-- =====================================
+call addTraining('RS1.1/00172','RS1.1',3,25,1,'A','CPCD/00249');
+call addTraining('RS1.1/00172','RS1.1',3,25,7,'B','CPCD/00178');
+call addTraining('RS1.1/00172','RS1.1',3,25,13,'C','CPCD/00316');
+
+-- =====================================
+call changeUserPassword('afysteph','123jondon');
+call changeUserPassword('mama t','123winny');
+-- =====================================
+call loginUser('afysteph','123jondon');
+call loginUser('mama t','123winny'); 
+-- ==================================
+call logoutUser('afysteph');
+call logoutUser('mama t');
+
+-- =============================
+
+

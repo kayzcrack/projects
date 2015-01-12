@@ -1,0 +1,686 @@
+-- M and E revised get procedures
+-- voti@quanteq.com
+-- 20-02-2014
+
+-- Returns details of all IndicatorClasses available
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllIndicatorClass //
+CREATE PROCEDURE getAllIndicatorClass()
+BEGIN
+	  SELECT IndicatorClassID,Description  FROM IndicatorClass;
+END //
+DELIMITER ;
+
+
+-- =================================================================================
+
+-- Returns details for a specified Indicator class
+DELIMITER //
+DROP PROCEDURE IF EXISTS getIndicatorClass //
+CREATE PROCEDURE getIndicatorClass
+				 (IN in_IndicatorclassID VARCHAR(16))
+
+BEGIN 
+	  SELECT IndicatorClassID,Description  FROM IndicatorClass
+	  WHERE IndicatorClassID = in_IndicatorClassID;
+
+END //
+DELIMITER ;
+
+-- =================================================================================
+
+-- Returns details of all Indicator Status
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllIndicatorStatus //
+CREATE PROCEDURE getAllIndicatorStatus()
+
+BEGIN
+	 SELECT StatusID,Description FROM IndicatorStatus;
+	 
+END //
+DELIMITER ;
+
+
+-- =================================================================================
+
+-- Returns details for a specified Status
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getIndicatorStatus //
+CREATE PROCEDURE getIndicatorStatus
+				  (IN in_StatusID CHAR(3))
+				  
+BEGIN 
+	  SELECT StatusID,Description FROM IndicatorStatus
+	  WHERE StatusID = in_StatusID;
+	
+END //
+DELIMITER ;
+
+-- =================================================================================
+
+-- Returns details of all indicator available
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllIndicators //
+CREATE PROCEDURE getAllIndicators()
+BEGIN
+	 SELECT A.IndicatorID,A.Name,A.StatusID,B.Description,A.IndicatorClassID,C.Description
+	 FROM Indicator A
+	 LEFT JOIN IndicatorStatus B ON A.StatusID = B.StatusID
+	 LEFT JOIN IndicatorClass C On A.IndicatorClassID = C.IndicatorClassID;
+END //
+DELIMITER ;
+
+-- ========================================================================
+	-- Returns details of all indicator available for a specific class
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getIndicatorsByClass //
+CREATE PROCEDURE getIndicatorsByClass(IN in_IndicatorClassID VARCHAR(16))
+	BEGIN
+		 SELECT A.IndicatorID,A.Name,A.StatusID,B.Description,A.IndicatorClassID,C.Description
+		 FROM Indicator A
+		 
+		 LEFT JOIN IndicatorStatus B ON A.StatusID = B.StatusID
+	    LEFT JOIN IndicatorClass C On A.IndicatorClassID = C.IndicatorClassID
+		 WHERE A.IndicatorClassID = in_IndicatorClassID;
+		 
+		END //
+	DELIMITER ;
+
+-- ====================================================================
+
+-- Returns details of all indicators available for a specified Indicator Class and Status
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllIndicatorsByClassStatus //
+CREATE PROCEDURE getAllIndicatorsByClassStatus(IN in_StatusID Char(3), IN in_IndicatorClassID Varchar(16))
+	BEGIN
+	  SELECT A.IndicatorID,A.Name,A.StatusID,B.Description,A.IndicatorClassID,C.Description
+	  FROM Indicator A
+	  LEFT JOIN IndicatorStatus B ON A.StatusID = B.StatusID
+	  LEFT JOIN IndicatorClass C On A.IndicatorClassID = C.IndicatorClassID
+	  WHERE A.StatusID = in_StatusID AND A.IndicatorClassID = in_IndicatorClassID ;
+	END //
+DELIMITER ;
+
+
+-- ===================================================================  
+
+-- Returns details of all indicators available for a specified Status  ordered by their Indicator classes
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllIndicatorsByStatus //
+CREATE PROCEDURE getAllIndicatorsByStatus(IN in_StatusID Char(3))
+ BEGIN
+       SELECT A.IndicatorID,A.Name,A.StatusID,B.Description,A.IndicatorClassID,C.Description
+		 FROM Indicator A
+		 
+		 LEFT JOIN IndicatorStatus B ON A.StatusID = B.StatusID
+	    LEFT JOIN IndicatorClass C On A.IndicatorClassID = C.IndicatorClassID
+		 WHERE A.StatusID = in_StatusID
+		 ORDER BY A.IndicatorClassID;
+ END //
+ DELIMITER ;
+ 
+ 
+ -- =======================================================================	
+ -- Returns details of all questionstatus available
+  
+ DELIMITER //
+ DROP PROCEDURE IF EXISTS getAllQuestionStatus //
+ CREATE PROCEDURE getAllQuestionStatus()
+	 BEGIN
+		SELECT StatusID,Description FROM QuestionStatus;
+	 END //
+ DELIMITER ;
+ 
+
+ -- ==================================================== 
+ -- Returns details of a specified status
+  
+ DELIMITER //
+ DROP PROCEDURE IF EXISTS getQuestionStatus //
+ CREATE PROCEDURE getQuestionStatus(IN in_StatusID Char(3))
+	 BEGIN
+		SELECT StatusID,Description FROM QuestionStatus
+		WHERE StatusID = in_StatusID;
+	 END //
+ DELIMITER ;
+ 
+
+-- =================================================
+-- Returns question that was immediately added.
+
+-- DELIMITER //
+-- DROP PROCEDURE IF EXISTS getQuestionadded //
+-- CREATE PROCEDURE getQuestionadded(IN in_QuestionID INT,IN in_IndicatorID INT,IN in_IndicatorClassID Varchar(16))
+-- BEGIN
+--    SELECT A.IndicatorID,B.Description,C.ResultTypeID,C.Description,D.Answer,D.Weight
+--    FROM QuestionAnswer A
+--    LEFT JOIN Questions B ON B.QuestionID = A.QuestionID AND B.IndicatorID = A.IndicatorID AND B.IndicatorClassID = A.IndicatorClassID
+--    LEFT JOIN ResultType C ON C.ResultTypeID = A.ResultTypeID
+--    LEFT JOIN Answers D ON D.AnswerID = A.AnswerID
+--    WHERE A.QuestionID = in_QuestionID AND A.IndicatorID = in_IndicatorID AND A.IndicatorClassID = in_IndicatorClassID;    
+-- END //
+-- DELIMITER ;
+
+-- call getQuestionadded(1,1,'H');
+-- call getQuestionadded(1,1,'Envrn');
+-- call getQuestionadded(3,2,'H');
+-- ================================================
+-- Returns questions for an indicator.
+--	DELIMITER //
+--	DROP PROCEDURE IF EXISTS getQuestionsbyIndicator //
+--	CREATE PROCEDURE getQuestionsbyIndicator(IN in_IndicatorClassID VARCHAR(16),IN in_IndicatorID INT)
+--	BEGIN
+--		SELECT A.QuestionID,B.Description,D.Answer
+--		 FROM QuestionAnswer A
+--		 LEFT JOIN Questions B ON B.QuestionID = A.QuestionID AND B.IndicatorID = A.IndicatorID AND B.IndicatorClassID = A.IndicatorClassID
+--		 LEFT JOIN Answers D ON D.AnswerID = A.AnswerID
+--		 WHERE  A.IndicatorClassID = in_IndicatorClassID AND A.IndicatorID = in_IndicatorID
+--		 ORDER BY A.IndicatorClassID DESC;
+--	END //
+--	DELIMITER ;
+
+--	call getQuestionsbyIndicator('H',2);
+--	call getQuestionsbyIndicator('Envrn',1);
+
+-- ============================================
+-- Returns all frequency of measures.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getFrequencyOfMeasure //
+CREATE PROCEDURE getFrequencyOfMeasure()
+BEGIN
+	 SELECT FrequencyID, Description, EffectiveStartDate, EffectiveEndDate
+	 FROM FrequencyOfMeasure;
+END //
+DELIMITER ;
+
+
+-- ========================================== 
+-- Returns all method of measurement.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getMethodOfMeasurements //
+CREATE PROCEDURE getMethodOfMeasurements()
+BEGIN
+	 SELECT MethodMeasureID, Description
+	 FROM MethodOfMeasurement;
+END //
+DELIMITER ;
+
+-- =========================================
+-- Returns all schedule active status
+DELIMITER //
+DROP PROCEDURE IF EXISTS getScheduleActiveStatus //
+CREATE PROCEDURE getScheduleActiveStatus()
+BEGIN
+	 SELECT  StatusID, Description
+	 FROM ScheduleActiveStatus;
+END //
+DELIMITER ;
+
+-- ========================================
+
+-- Returns all UserStatus
+DELIMITER //
+DROP PROCEDURE IF EXISTS getUStatus //
+CREATE PROCEDURE getUStatus()
+BEGIN
+ SELECT UserStatusID, Description
+  FROM UserStatus;
+END //
+DELIMITER ;
+
+
+
+-- =======================================
+-- Returns all UserRoles from the database.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getUserRoles //
+CREATE PROCEDURE getUserRoles()
+BEGIN
+ SELECT RoleID, Description FROM UserRole;
+END //
+DELIMITER ;
+
+-- =====================================
+-- Returns all permissionTypes.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllPermissionTypes //
+CREATE PROCEDURE getAllPermissionTypes()
+BEGIN
+ SELECT PermissionID, Description FROM PermissionType;
+END //
+DELIMITER ;
+
+-- =====================================
+-- Returns all permissions for a specified role.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getPermission //
+CREATE PROCEDURE getPermission(IN in_RoleID Char(32))
+BEGIN
+ SELECT A.PermissionID,B.Description
+ FROM Permission A
+ LEFT JOIN PermissionType B ON A.PermissionID = B.PermissionID;
+END //
+DELIMITER ;
+
+-- =========================================
+-- Returns all team..
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllTeams //
+CREATE PROCEDURE getAllTeams()
+BEGIN
+ SELECT TeamID, Description, DateFormed FROM Team;
+END //
+DELIMITER ;
+
+
+-- =======================================
+-- Returns a team with the specified teamID.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getTeam //
+CREATE PROCEDURE getTeam(IN in_TeamID Varchar(16))
+BEGIN
+ SELECT TeamID, Description, DateFormed FROM Team
+ WHERE TeamID = in_TeamID;
+END //
+DELIMITER ;
+
+
+
+-- =======================================
+-- Returns all the details of specified team members.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllTeamMembers //
+CREATE PROCEDURE getAllTeamMembers(IN in_TeamID Varchar(16))
+BEGIN
+  SELECT A.TeamID,B.Description,A.Username,C.Surname,C.Firstname,C.UserStatusID,D.Description
+  FROM TeamMember A
+  LEFT JOIN Team B ON B.TeamID = A.TeamID
+  LEFT JOIN User C ON C.Username = A.Username
+  LEFT JOIN UserStatus D ON D.UserStatusID = C.UserStatusID
+  WHERE A.TeamID = in_TeamID;
+END //
+DELIMITER ;
+
+-- =========================================
+-- Returns all respondent types
+-- DELIMITER //
+-- DROP PROCEDURE IF EXISTS getRespondentType //
+-- CREATE PROCEDURE getRespondentType()
+-- BEGIN
+--  SELECT RepID,Description FROM RespondentType;
+-- END //
+-- DELIMITER ;
+
+-- call getRespondentType();
+-- ====================================  
+-- Returns the  type of respondent visited by a team during a specified period
+DELIMITER //
+DROP PROCEDURE IF EXISTS getTeamRespondents //
+CREATE PROCEDURE getTeamRespondents(IN in_TeamID Varchar(16))
+BEGIN
+ SELECT A.RespondentID,B.Description,A.TeamID,A.StartDate,A.EndDate
+ FROM TeamRespondent A
+ LEFT JOIN Respondent B ON A.RespondentID = B.RespondentID
+ WHERE A.TeamID = in_TeamID;
+END //
+DELIMITER ;
+ 
+
+-- ==================================
+-- Returns all facility types
+DELIMITER //
+DROP PROCEDURE IF EXISTS getFacilityTpes //
+CREATE PROCEDURE getFacilityTpes()
+BEGIN
+  SELECT FacilityTypeID, Description FROM FacilityType;
+END //
+DELIMITER ;
+
+
+-- =================================
+-- Returns all Services from the database.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getFacilityServices //
+CREATE PROCEDURE getFacilityServices()
+BEGIN
+  SELECT ServiceTypeID, Name FROM FacilityService;
+END //
+DELIMITER ;
+
+-- =================================
+-- Returns all Titles from the database.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getTitle //
+CREATE PROCEDURE getTitle()
+BEGIN
+  SELECT TitleID,Description FROM Title;
+END //
+DELIMITER ;
+
+
+
+-- =================================
+-- Returns details of a contact person for a specific facility.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getFacilityContact //
+CREATE PROCEDURE getFacilityContact(IN in_FacilityID INT)
+BEGIN
+   SELECT  A.FacilityID,B.Name,A.ContactID,A.ContactEmail,A.PhoneNumber
+   FROM FacilityContacts A
+   LEFT JOIN Facility B ON A.FacilityID = B.FacilityID
+   WHERE A.FacilityID = in_FacilityID ;
+END //
+DELIMITER ;
+
+
+
+-- ==========================================  
+-- Returns all facility status
+DELIMITER //
+DROP PROCEDURE IF EXISTS getFacilityStatus //
+CREATE PROCEDURE getFacilityStatus()
+BEGIN
+  SELECT FacilityStatusID,Description FROM FacilityStatus;
+END //
+DELIMITER ;
+
+
+
+-- =======================================
+-- Returns all facility for a specific facility type
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAllFacilityByType //
+CREATE PROCEDURE getAllFacilityByType(IN in_FacilityTypeID Char(3))
+BEGIN
+  SELECT A.FacilityID,A.Name,A.FacilityStatusID,B.Description,A.FacilityTypeID,C.Description
+  FROM Facility A
+  LEFT JOIN FacilityStatus B ON A.FacilityStatusID = B.FacilityStatusID
+  LEFT JOIN FacilityType C ON A.FacilityTypeID = C.FacilityTypeID
+  WHERE A.FacilityID = in_FacilityTypeID ;
+END //
+DELIMITER ;
+
+-- =========================================
+-- It returns all the continents in the Database
+DELIMITER //
+DROP PROCEDURE IF EXISTS getContinent //
+CREATE PROCEDURE getContinent()
+BEGIN
+ SELECT ContinentCode,Name FROM Continent;
+END //
+DELIMITER ;
+
+-- ========================================
+-- It returns all the continents in the Database
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountry //
+CREATE PROCEDURE getCountry()
+BEGIN
+ SELECT A.ContinentCode,A.Name,A.CountryCode,B.Name
+ FROM Country A
+ LEFT JOIN Continent B ON A.ContinentCode = B.ContinentCode;
+END //
+DELIMITER ;
+
+
+
+-- ===========================================
+-- Returns all countries in the specified continents.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountryByContinent //
+CREATE PROCEDURE getCountryByContinent(IN in_ContinentCode Char(3))
+BEGIN
+ SELECT CountryCode,Name
+ FROM Country
+ WHERE ContinentCode = in_ContinentCode ;
+END //
+DELIMITER ;
+
+-- =============================================
+-- Returns all administrative levels in a country.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountryLevelNames //
+CREATE PROCEDURE getCountryLevelNames(IN in_CountryCode Char(3))
+BEGIN
+ SELECT CountryCode,Level1name,Level2name,Level3name
+ FROM LevelName
+ WHERE CountryCode = in_CountryCode ;
+END //
+DELIMITER ;
+
+-- ============================================
+-- Returns the first administrative level of a country.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountryAULevel1 //
+CREATE PROCEDURE getCountryAULevel1(IN In_CountryCode Char(3))
+BEGIN
+ SELECT AULevel1ID,Name FROM AULevel1
+ WHERE CountryCode = in_CountryCode;
+END //
+DELIMITER ;
+
+
+-- =================================================
+
+-- Returns the second administrative level of a country.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountryAULevel2 //
+CREATE PROCEDURE getCountryAULevel2(IN In_CountryCode Char(3))
+BEGIN
+ SELECT AULevel1ID,Name,AULevel2ID FROM AULevel2
+ WHERE CountryCode = in_CountryCode;
+END //
+DELIMITER ;
+
+-- ==================================================
+-- Returns the administrative level under AULevel1
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAULevel2InAULevel1 //
+CREATE PROCEDURE getAULevel2InAULevel1(IN In_AULevel1ID Varchar(5))
+BEGIN
+ SELECT AULevel2ID,Name FROM AULevel2
+ WHERE AULevel1ID = in_AULevel1ID;
+END //
+DELIMITER ;
+
+-- ===================================================
+-- Returns the third administrative level in a country.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getCountryAULevel3 //
+CREATE PROCEDURE getCountryAULevel3(IN in_CountryCode Char(3))
+BEGIN
+ SELECT A.AULevel1ID, A.Name,A.AULevel2ID, B.Name, A.AULevel3ID,C.Name
+ FROM AULevel3 A
+ LEFT JOIN AULevel2 B ON A.CountryCode = B.CountryCode AND A.AULevel2ID = B.AULevel2ID AND A.AULevel1ID = B.AULevel1ID
+ LEFT JOIN AULevel1 C ON A.CountryCode = C.CountryCode AND A.AULevel1ID = C.AULevel1ID
+ WHERE A.CountryCode = in_CountryCode ;
+END //
+DELIMITER ;
+
+-- ===================================================
+
+ -- Returns the third administrative levels in AULevel2.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAULevel3InAULevel2 //
+CREATE PROCEDURE getAULevel3InAULevel2(IN In_AULevel2ID Varchar(5),IN In_AULevel1ID Varchar(5), IN in_CountryCode Char(3))
+BEGIN
+ SELECT AULevel3ID,Name FROM AULevel3
+ WHERE AULevel2ID = in_AULevel2ID AND AULevel1ID = in_AULevel1ID AND CountryCode = in_CountryCode;
+END //
+DELIMITER ;
+
+-- ==================================================
+-- Returns team area of coverage for a specified period of time. ( if Start and End date is empty it returns all the area of coverage for a team)
+DELIMITER //
+DROP PROCEDURE IF EXISTS getTeamAreaOfCoverage //
+CREATE PROCEDURE getTeamAreaOfCoverage(IN In_TeamID Varchar(16), IN in_StartDate DATETIME, IN in_EndDate DATETIME)
+BEGIN
+
+  SET @strDate = '1980-01-01';
+  SET @endDate = '2020-01-01';
+  
+  IF in_StartDate = "" AND in_EndDate = "" THEN 
+		  SELECT A.AULevel3ID,B.Name,A.CountryCode,C.Name,A.AULevel2ID,D.Name,A.AULevel1ID,E.Name
+		  FROM TeamAreaOfCoverage A
+		  LEFT JOIN AULevel3 B ON A.AULevel3ID = B.AULevel3ID
+		  LEFT JOIN AULevel2 C ON A.AULevel2ID = C.AULevel2ID
+		  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+		  LEFT JOIN Country E ON A.CountryCode = E.CountryCode
+		  WHERE A.TeamID = in_TeamID AND A.StartDate  BETWEEN @strDate AND @endDate;
+ ELSE		  
+  
+		  IF in_StartDate <> "" AND in_EndDate = "" THEN 
+				  SELECT A.AULevel3ID,B.Name,A.CountryCode,C.Name,A.AULevel2ID,D.Name,A.AULevel1ID,E.Name
+				  FROM TeamAreaOfCoverage A
+				  LEFT JOIN AULevel3 B ON A.AULevel3ID = B.AULevel3ID
+				  LEFT JOIN AULevel2 C ON A.AULevel2ID = C.AULevel2ID
+				  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+				  LEFT JOIN Country E ON A.CountryCode = E.CountryCode
+				  WHERE A.TeamID = in_TeamID AND A.StartDate BETWEEN in_StartDate AND @endDate;
+		 ELSE		  
+			
+			  IF in_StartDate = "" AND in_EndDate <> "" THEN
+					  SELECT A.AULevel3ID,B.Name,A.CountryCode,C.Name,A.AULevel2ID,D.Name,A.AULevel1ID,E.Name
+					  FROM TeamAreaOfCoverage A
+					  LEFT JOIN AULevel3 B ON A.AULevel3ID = B.AULevel3ID
+					  LEFT JOIN AULevel2 C ON A.AULevel2ID = C.AULevel2ID
+					  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+					  LEFT JOIN Country E ON A.CountryCode = E.CountryCode
+					  WHERE A.TeamID = in_TeamID AND A.endDate BETWEEN @strDate AND in_EndDate;
+                       ELSE
+           
+                                          SELECT A.AULevel3ID,B.Name,A.CountryCode,C.Name,A.AULevel2ID,D.Name,A.AULevel1ID,E.Name
+					  FROM TeamAreaOfCoverage A
+					  LEFT JOIN AULevel3 B  ON A.AULevel3ID = B.AULevel3ID
+					  LEFT JOIN AULevel2 C ON A.AULevel2ID = C.AULevel2ID
+					  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+					  LEFT JOIN Country E ON A.CountryCode = E.CountryCode
+					  WHERE A.TeamID = in_TeamID AND StartDate = in_StartDate AND EndDate = in_EndDate;
+  END IF;
+ END IF;
+END IF;					  
+END //
+DELIMITER ;
+
+-- ==============================================================	
+-- Returns all the gender in the database.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getGender //
+CREATE PROCEDURE getGender()
+BEGIN
+ SELECT Sex,Description FROM Gender ;
+END //
+DELIMITER ;
+
+-- ====================================== 		
+-- Returns all marital status
+DELIMITER //
+DROP PROCEDURE IF EXISTS getMaritalStatus //
+CREATE PROCEDURE getMaritalStatus()
+BEGIN
+ SELECT MaritalID,Description FROM MaritalStatus;
+END //
+DELIMITER ;
+
+-- ================================== 	
+-- Returns details of human respondents based on the specified Human ID.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getHumanRespodent //
+CREATE PROCEDURE getHumanRespodent(IN In_HumanID INT)
+BEGIN
+  SELECT A.Surname,A.OtherNames,A.Sex,B.Description,A.DateOfBirth,A.MaritalID,C.Description
+  FROM HumanRespondent A
+  LEFT JOIN Gender B ON A.Sex = B.Sex
+  LEFT JOIN MaritalStatus C ON A.MaritalID = C.MaritalID
+  WHERE HumanID = in_HumanID;
+END //
+DELIMITER ;
+
+-- =========================================================
+-- Returns type of addresses in the database.
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAddressType //
+CREATE PROCEDURE getAddressType()
+BEGIN
+  SELECT AddressTypeID,Description FROM AddressType;
+END //
+DELIMITER ;
+
+-- ========================================================  
+-- Returns the address of a particular respondent either for a facility or human
+DELIMITER //
+DROP PROCEDURE IF EXISTS getAddress //
+CREATE PROCEDURE getAddress(IN in_FacilityID Varchar(16), IN in_HumanID INT)  
+BEGIN
+-- first set 2 variables to get the respondentID from the respondent table using in_facility or in_human
+-- use the values of the variables to get address from address table
+-- here u can use an IF in case any of the two variable is selected
+
+DECLARE Fac INT;
+DECLARE Hum INT;
+
+SET Fac = 'SELECT RespondentID FROM Respondent WHERE FacilityID = in_FacilityID';
+SET Hum = 'SELECT RespondentID FROm Respondent WHERE HumanID = in_HumanID';
+
+  IF in_FacilityID = ' ' THEN
+	  SELECT A.AddressTypeID, B.Description,A.CountryCode,C.Name,A.AULevel1ID,D.Name,A.AULevel2ID,E.Name, A.AULevel3ID,F.Name,A.Addressline1,A.Addressline2
+	  FROM Address A
+	  LEFT JOIN AddressType B ON A.AddressTypeID = B.AddressTypeID
+	  LEFT JOIN Country C ON A.CountryCode = C.CountryCode
+	  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+	  LEFT JOIN AULevel2 E ON A.AULevel2ID = E.AULevel2ID
+	  LEFT JOIN AULevel3 F ON A.AULevel3ID = F.AULevel3ID
+	  WHERE in_HumanID = Hum;
+  ELSE
+  
+  IF in_HumanID = ' ' THEN
+	  SELECT A.AddressTypeID, B.Description,A.CountryCode,C.Name,A.AULevel1ID,D.Name,A.AULevel2ID,E.Name, A.AULevel3ID,F.Name,A.Addressline1,A.Addressline2
+	  FROM Address A
+	  LEFT JOIN AddressType B ON A.AddressTypeID = B.AddressTypeID
+	  LEFT JOIN Country C ON A.CountryCode = C.CountryCode
+	  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+	  LEFT JOIN AULevel2 E ON A.AULevel2ID = E.AULevel2ID
+	  LEFT JOIN AULevel3 F ON A.AULevel3ID = F.AULevel3ID
+  WHERE in_FacilityID = Fac;
+  ELSE
+  
+  IF in_FacilityID = ' ' AND in_HumanID = '' THEN
+	  SELECT A.AddressTypeID, B.Description,A.CountryCode,C.Name,A.AULevel1ID,D.Name,A.AULevel2ID,E.Name, A.AULevel3ID,F.Name,A.Addressline1,A.Addressline2
+	  FROM Address A
+	  LEFT JOIN AddressType B ON A.AddressTypeID = B.AddressTypeID
+	  LEFT JOIN Country C ON A.CountryCode = C.CountryCode
+	  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+	  LEFT JOIN AULevel2 E ON A.AULevel2ID = E.AULevel2ID
+	  LEFT JOIN AULevel3 F ON A.AULevel3ID = F.AULevel3ID;
+  ELSE
+     
+     SELECT A.AddressTypeID, B.Description,A.CountryCode,C.Name,A.AULevel1ID,D.Name,A.AULevel2ID,E.Name, A.AULevel3ID,F.Name,A.Addressline1,A.Addressline2
+	  FROM Address A
+	  LEFT JOIN AddressType B ON A.AddressTypeID = B.AddressTypeID
+	  LEFT JOIN Country C ON A.CountryCode = C.CountryCode
+	  LEFT JOIN AULevel1 D ON A.AULevel1ID = D.AULevel1ID
+	  LEFT JOIN AULevel2 E ON A.AULevel2ID = E.AULevel2ID
+	  LEFT JOIN AULevel3 F ON A.AULevel3ID = F.AULevel3ID
+	  WHERE in_FacilityID = Fac AND in_HumanID = Hum;
+   END IF; 
+  END IF;
+ END IF; 
+END //
+DELIMITER ;  
+
+-- ===============================================================
+--	DELIMITER //
+--	DROP PROCEDURE IF EXISTS getScheduleActiveIndicator //
+--	CREATE PROCEDURE getScheduleActiveIndicator(IN in_StartDate DATETIME, IN in_EndDate DATETIME)  
+--	BEGIN 
+--		 SELECT B.IndicatorID,B.Name,C.IndicatorClassID,D.Description,D.TeamID,E.Description,A.QuestionID,F.HINT
+--		 FROM ScheduledActiveIndicator A
+--		 LEFT JOIN Question F ON F.QuestionID = A.QuestionID
+--		 LEFT JOIN 
+

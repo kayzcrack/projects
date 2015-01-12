@@ -1,0 +1,103 @@
+-- cpcd functions
+-- voti@quanteq.com
+-- 19/03/14
+-- ============================
+DELIMITER //
+
+DROP FUNCTION IF EXISTS `upc_checkdigit`//
+
+CREATE FUNCTION `upc_checkdigit`(s VARCHAR(255)) RETURNS CHAR(1) CHARSET latin1
+DETERMINISTIC
+BEGIN
+	DECLARE len INT;
+	DECLARE odd INT DEFAULT 0;
+	DECLARE even INT DEFAULT 0;
+	DECLARE i INT DEFAULT 1;
+	DECLARE SUM INT;
+	SET len=CHAR_LENGTH(s);
+	REPEAT
+		IF i<=len THEN
+			SET odd=odd+ASCII(SUBSTRING(s FROM i FOR 1))-48;
+		END IF;
+		SET i = i+2;
+	UNTIL i>len END REPEAT;
+	SET i=2;
+	REPEAT
+		IF i<=len THEN
+			SET even=even+ASCII(SUBSTRING(s FROM i FOR 1))-48;
+		END IF;
+		SET i = i+2;
+	UNTIL i>len END REPEAT;
+	SET SUM=even+3*odd;
+	SET i=SUM%10;
+	IF i THEN
+		SET i=10-i;
+	END IF;
+	
+	RETURN i;
+END //
+
+DELIMITER ;
+
+-- ==========================================
+
+-- generates identification number for students.
+DELIMITER //
+
+DROP FUNCTION IF EXISTS `makeSDIN` //
+CREATE FUNCTION `makeSDIN`(in_Surname VARCHAR(32)) RETURNS CHAR(15) CHARSET latin1
+DETERMINISTIC
+BEGIN
+SET @prefix = 'SDIN/';
+SET @ldin=(SELECT SDIN FROM SDINs WHERE DateUsed IS NULL LIMIT 1);
+UPDATE SDINs SET DateUsed=CURRENT_DATE() WHERE SDIN =@ldin; 
+RETURN (CONCAT(@prefix,@ldin,upc_checkdigit(in_Surname)));
+END //
+
+DELIMITER ;
+
+-- =========================================
+-- generates identification number for Staffs
+DELIMITER //
+
+DROP FUNCTION IF EXISTS `makeSTIN` //
+CREATE FUNCTION `makeSTIN`(in_Surname VARCHAR(32)) RETURNS CHAR(15) CHARSET latin1
+DETERMINISTIC
+BEGIN
+SET @prefix = 'STIN/PEM/';
+SET @ldin=(SELECT STIN FROM STINs WHERE DateUsed IS NULL LIMIT 1);
+UPDATE STINs SET DateUsed=CURRENT_DATE() WHERE STIN =@ldin; 
+RETURN (CONCAT(@prefix,@ldin,upc_checkdigit(in_Surname)));
+END //
+
+DELIMITER ;
+-- =========================================
+-- generates identification number for SIINs.
+-- DELIMITER //
+-- 
+-- DROP FUNCTION IF EXISTS `makeSIIN` //
+-- CREATE FUNCTION `makeSIIN`(in_Surname VARCHAR(32),in_SectorCode Varchar(16)) RETURNS CHAR(15) CHARSET latin1
+-- DETERMINISTIC
+-- BEGIN
+-- SET @del = '/';
+-- SET @ldin=(SELECT SIIN FROM SIINs WHERE DateUsed IS NULL LIMIT 1);
+-- UPDATE SIINs SET DateUsed=CURRENT_DATE() WHERE SIIN =@ldin; 
+-- RETURN (CONCAT(in_SectorCode,@del,@ldin,upc_checkdigit(in_Surname)));
+-- END //
+-- 
+-- DELIMITER ;
+-- =========================================
+-- function authenticates user
+-- DELIMITER //
+-- DROP FUNCTION IF EXISTS authenticateUser //
+-- CREATE FUNCTION authenticateUser(in_User VARCHAR(16), in_Password VARCHAR(255))
+-- RETURNS BOOLEAN READS SQL DATA
+-- DETERMINISTIC
+-- BEGIN
+--     RETURN (SELECT COUNT(*) FROM `User`
+-- 	WHERE User=in_User AND Password= PASSWORD(in_Password));
+-- 
+-- END //
+-- DELIMITER ;
+
+-- =======================================

@@ -1,0 +1,53 @@
+drop database if exists sync;
+create database sync;
+use sync;
+
+drop table if exists movies;
+create table movies(
+code char(6) not null primary key,
+name varchar(20) not null,
+flag int not null default 0
+);
+
+-- --------------------------
+
+insert into movies(code,name) values('act1','Edge of tomorrow');
+insert into movies(code,name,flag) values('act2','Thor',0);
+insert into movies(code,name) values('act3','Thor2');
+insert into movies(code,name,flag) values('act4','Star wars',0);
+insert into movies(code,name) values('dra','mmmxmxmxmx');
+insert into movies(code,name) values('act5','Lord of the rings');
+insert into movies(code,name,flag) values('com','ukwa',0);
+insert into movies(code,name) values('sci','rio');
+insert into movies(code,name,flag) values('act6','Edge of tomorrow2',0);
+insert into movies(code,name,flag) values('act7','Edge of tomorrow3',0);
+
+insert into movies(code,name) values('act8','Edge of tomorrow');
+insert into movies(code,name,flag) values('act14','Thor',0);
+insert into movies(code,name) values('act9','Thor2');
+insert into movies(code,name,flag) values('act10','Star wars',0);
+insert into movies(code,name) values('dra2','mmmxmxmxmx');
+insert into movies(code,name) values('act11','Lord of the rings');
+insert into movies(code,name,flag) values('com1','ukwa',0);
+insert into movies(code,name) values('sci1','rio');
+insert into movies(code,name,flag) values('act12','Edge of tomorrow2',0);
+insert into movies(code,name,flag) values('act13','Edge of tomorrow3',0);
+
+
+-- ---------------------------
+DELIMITER //
+DROP PROCEDURE IF EXISTS checkFlag //
+CREATE PROCEDURE checkFlag()
+BEGIN
+     select * from movies where flag = 0;
+END //
+DELIMITER ;
+-- -------------------------
+DELIMITER //
+DROP PROCEDURE IF EXISTS fetchFlag //
+CREATE PROCEDURE fetchFlag()
+BEGIN
+     select * from movies where flag = 0 limit 5;
+END //
+DELIMITER ;
+-- -------------------------
