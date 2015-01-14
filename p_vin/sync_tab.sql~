@@ -39,7 +39,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS checkFlag //
 CREATE PROCEDURE checkFlag()
 BEGIN
-     select * from movies where flag = 0;
+     select * from movies where flag = 1;
 END //
 DELIMITER ;
 -- -------------------------
@@ -47,7 +47,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS fetchFlag //
 CREATE PROCEDURE fetchFlag()
 BEGIN
-     select * from movies where flag = 0 limit 5;
+     select * from movies where flag = 1 limit 5;
 END //
 DELIMITER ;
 -- -------------------------

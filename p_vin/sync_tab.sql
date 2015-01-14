@@ -39,7 +39,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS checkFlag //
 CREATE PROCEDURE checkFlag()
 BEGIN
-     select * from movies where flag = 0;
+     select count(*) from movies where flag = 0;
 END //
 DELIMITER ;
 -- -------------------------

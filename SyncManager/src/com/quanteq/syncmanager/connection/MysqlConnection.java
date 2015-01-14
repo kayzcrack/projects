@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sync;
+
+package com.quanteq.syncmanager.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,8 +16,7 @@ import java.util.logging.Logger;
  *
  * @author voti
  */
-public class MySQLConnection {
-
+public class MysqlConnection {
     private static Connection mysqlConn;
 
     public static Connection getConnection() {
@@ -27,7 +27,7 @@ public class MySQLConnection {
                 String password = "password";
                 mysqlConn = DriverManager.getConnection(host, uname, password);
             } catch (SQLException ex) {
-                Logger.getLogger(MySQLConnection.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MysqlConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return mysqlConn;
