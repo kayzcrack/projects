@@ -29,10 +29,9 @@ public class DAO {
     CallableStatement cs;
     Connection conn;
     
-    public boolean checkUnflaggedRecords() {
+    public boolean checkUnflaggedRecords() throws SQLException {
         int count = 0;
         boolean check = false;
-        try {
             conn = MysqlConnection.getConnection();
             cs = conn.prepareCall(CHECK_UNSYNCED_RECORDS);
             rs = cs.executeQuery();
@@ -47,16 +46,12 @@ public class DAO {
                 check = false;
                 //System.out.println(check);
             }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
         return check;
     }
 
 
 
-    public ResultSet fetchUnflaggedRecords(int batch_size) {
+    public ResultSet fetchUnflaggedRecords(int batch_size) throws SQLException {
         try{
             conn = MysqlConnection.getConnection();
             cs = conn.prepareCall(FETCH_UNSYNCED_RECORDS);

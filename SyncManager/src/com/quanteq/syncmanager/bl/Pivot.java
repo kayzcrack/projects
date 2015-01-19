@@ -27,10 +27,9 @@ public class Pivot {
     CallableStatement cs;
     Connection conn;
 
-   public List<Suspect> fetchUnflaggedRecords(int BATCH_SIZE) {
+   public List<Suspect> fetchUnflaggedRecords(int BATCH_SIZE) throws SQLException{
         List<Suspect> suspectList = new ArrayList();
         rs = new DAO().fetchUnflaggedRecords(BATCH_SIZE);
-                try{
             while(rs.next()){
                 Suspect s = new Suspect();
                 s.setCode(rs.getString("code"));
@@ -38,13 +37,10 @@ public class Pivot {
                 s.setFlag(rs.getString("flag"));
                 suspectList.add(s);
             }
-        }catch(SQLException ex){
-            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE,null,ex);
-        }
         return suspectList;
     }
 
-    public boolean checkUnflaggedRecords() {
+    public boolean checkUnflaggedRecords() throws SQLException {
        boolean checkUnflagged = new DAO().checkUnflaggedRecords();
        if(checkUnflagged){
            return true;
