@@ -22,9 +22,9 @@ public class MysqlConnection {
     public static Connection getConnection() {
         if (mysqlConn == null) {
             try {
-                String host = "jdbc:mysql://localhost:3306/sync";
-                String uname = "root";
-                String password = "password";
+                String host = "jdbc:mysql://172.16.3.20:3306/policelockupdiary_online";
+                String uname = "sdg";
+                String password = "sdg2009";
                 mysqlConn = DriverManager.getConnection(host, uname, password);
             } catch (SQLException ex) {
                 Logger.getLogger(MysqlConnection.class.getName()).log(Level.SEVERE, null, ex);

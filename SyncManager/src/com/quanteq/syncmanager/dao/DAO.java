@@ -7,13 +7,10 @@
 package com.quanteq.syncmanager.dao;
 
 import com.quanteq.syncmanager.connection.MysqlConnection;
-import com.quanteq.syncmanager.model.Suspect;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,8 +19,9 @@ import java.util.logging.Logger;
  * @author voti
  */
 public class DAO {
-    private final String CHECK_UNSYNCED_RECORDS = "{call checkFlag()}";
-    private final String FETCH_UNSYNCED_RECORDS = "{call fetchFlag(?)}";
+    private final String CHECK_UNSYNCED_RECORDS = "{call checkRecordsForSync()}";
+    private final String FETCH_UNSYNCED_RECORDS = "{call getSuspectForSync(?)}";
+    private final String GET_SUSPECT_CASE = "{call getCase(?)}";
     
     ResultSet rs;
     CallableStatement cs;
@@ -36,7 +34,7 @@ public class DAO {
             cs = conn.prepareCall(CHECK_UNSYNCED_RECORDS);
             rs = cs.executeQuery();
             while (rs.next()) {
-                count = rs.getInt("counts");
+                count = rs.getInt("ReadyForSync");
             }
             //System.out.println(rs);
             if (count > 0) {
@@ -57,6 +55,18 @@ public class DAO {
             cs = conn.prepareCall(FETCH_UNSYNCED_RECORDS);
             cs.setInt(1, batch_size);
             rs = cs.executeQuery();
+        }catch(SQLException ex){
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+
+    public ResultSet getSuspectCase(String string) throws SQLException {
+        try{
+        conn = MysqlConnection.getConnection();
+        cs = conn.prepareCall(GET_SUSPECT_CASE);
+        cs.setString(1, string);
+        rs = cs.executeQuery();
         }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }

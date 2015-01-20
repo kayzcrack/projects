@@ -6,13 +6,12 @@
 package com.quanteq.syncmanager.util;
 
 import com.quanteq.syncmanager.controller.SyncManager;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author vincent oti
+ * @author voti
  */
 public class test {
 
