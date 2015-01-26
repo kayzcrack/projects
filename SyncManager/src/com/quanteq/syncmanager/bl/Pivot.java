@@ -7,6 +7,7 @@
 package com.quanteq.syncmanager.bl;
 
 import com.quanteq.syncmanager.dao.DAO;
+import com.quanteq.syncmanager.model.Case;
 import com.quanteq.syncmanager.model.Suspect;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -39,34 +40,32 @@ public class Pivot {
                 s.setEnroller(rs.getString("Enroller"));
                 s.setGroup(rs.getString("Class"));
                 s.setSync(rs.getInt("Sync"));
+               
+//                System.out.println(rs.getString("ID"));
+//                System.out.println(rs.getString("FullName"));
+//                System.out.println(rs.getInt("Age"));
                 
-                System.out.println(rs.getString("ID"));
-                System.out.println(rs.getString("FullName"));
-                System.out.println(rs.getString("GenderID"));
-                System.out.println(rs.getString("Age"));
-                System.out.println("\n");
-                
-              
-                // call for suspect case
-                rs1 = dao.getSuspectCase(rs.getString("ID"));
-                   while(rs1.next()){
-                       s.setSuspectID(rs1.getString("SuspectID"));
-                       s.setEntryNumber(rs1.getInt("EntryNumber"));
-                       s.setCrime(rs1.getString("Crime"));
-                       s.setCrime_Date(rs1.getDate("CrimeDate"));
-                       
-                       System.out.println(rs1.getString("SuspectID"));
-                       System.out.println(rs1.getString("EntryNumber"));
-                       System.out.println(rs1.getString("Crime"));
-                       System.out.println(rs1.getString("CrimeDate"));
-                   }
- 
-                   
-                // call for suspect investigative officer
-                // call for suspect crime statement
-                // call for suspect properties
-                // call for suspect standing
-                suspectList.add(s);
+                List<Case> caseList = new ArrayList();
+                rs1 = dao.getCase(rs.getString("ID"));
+                while (rs1.next()) {
+                    Case c = new Case();
+                    c.setSuspectID(rs1.getString("SuspectID"));
+                    c.setEntryNumber(rs1.getInt("EntryNumber"));
+                    c.setCrime(rs1.getString("Crime"));
+                    c.setCrime_Date(rs1.getDate("CrimeDate"));
+                    caseList.add(c);
+
+//                    System.out.println(rs1.getString("SuspectID"));
+//                    System.out.println(rs1.getString("EntryNumber"));
+//                    System.out.println(rs1.getString("Crime"));
+//                    System.out.println(rs1.getString("CrimeDate"));
+//                    System.out.println(" SuspectID  " +  rs.getString("ID") + " Name  " + rs.getString("FullName") + " Case  " +
+//                            rs1.getString("Crime"));
+               }
+                 
+                 s.setCaseList(caseList);
+                 suspectList.add(s);
+
             }
         return suspectList;
     }

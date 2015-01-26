@@ -6,7 +6,10 @@
 
 package com.quanteq.syncmanager.model;
 
+import com.quanteq.syncmanager.bl.Pivot;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 
 
@@ -15,9 +18,18 @@ import java.util.Date;
  * @author voti
  */
 public class Suspect {
-    private String ID,SuspectID,Crime,FullName, GenderID,PhoneNumber,Enroller,group;
-    private Date DateEnrolled, Crime_Date,DateReported;
-    private int sync, Age, EntryNumber;
+    private String ID;
+    String FullName;
+    String GenderID;
+    String PhoneNumber;
+    String Enroller;
+    String group;
+    private Date DateEnrolled;
+    private int sync;
+    private int Age;
+    private List<Case> caseList;
+    
+    
     
     
     // setters and getters for suspect model
@@ -93,49 +105,12 @@ public class Suspect {
     public void setGroup(String group) {
         this.group = group;
     }
-    
-    // setters and getters for case model
-    public String getSuspectID() {
-        return SuspectID;
+
+    public List<Case> getCaseList(){
+        return caseList;
     }
 
-    public void setSuspectID(String SuspectID) {
-        this.SuspectID = SuspectID;
+    public void setCaseList(List<Case> caseList) {
+        this.caseList = caseList;
     }
-
-    public String getCrime() {
-        return Crime;
-    }
-
-    public void setCrime(String Crime) {
-        this.Crime = Crime;
-    }
-
-    public Date getCrime_Date() {
-        return Crime_Date;
-    }
-
-    public void setCrime_Date(Date Crime_Date) {
-        this.Crime_Date = Crime_Date;
-    }
-
-    public Date getDateReported() {
-        return DateReported;
-    }
-
-    public void setDateReported(Date DateReported) {
-        this.DateReported = DateReported;
-    }
-    
-    
-    public int getEntryNumber() {
-        return EntryNumber;
-    }
-
-    public void setEntryNumber(int EntryNumber) {
-        this.EntryNumber = EntryNumber;
-    }
-    
-    
-
 }

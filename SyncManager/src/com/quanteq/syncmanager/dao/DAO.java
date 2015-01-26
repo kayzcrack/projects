@@ -22,6 +22,8 @@ public class DAO {
     private final String CHECK_UNSYNCED_RECORDS = "{call checkRecordsForSync()}";
     private final String FETCH_UNSYNCED_RECORDS = "{call getSuspectForSync(?)}";
     private final String GET_SUSPECT_CASE = "{call getCase(?)}";
+    private final String GET_ALL_CASES = "{call getAllCases()}";
+    private final String GET_SUSPECT_CASES = "{call getCases(?)}";
     
     ResultSet rs;
     CallableStatement cs;
@@ -70,6 +72,21 @@ public class DAO {
         }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return rs;
+    }
+
+//    public ResultSet getCase() throws SQLException{
+//        conn = MysqlConnection.getConnection();
+//        cs = conn.prepareCall(GET_ALL_CASES);
+//        rs = cs.executeQuery();
+//        return rs;
+//    }
+
+    public ResultSet getCase(String string) throws SQLException{
+        conn = MysqlConnection.getConnection();
+        cs = conn.prepareCall(GET_SUSPECT_CASES);
+        cs.setString(1, string);
+        rs = cs.executeQuery();
         return rs;
     }
     
