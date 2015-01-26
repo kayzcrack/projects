@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://sdg.quanteq.com/~mtchuente/police/ws.php" uri="xml-resources/web-service-references/ws/wsdl/sdg.quanteq.com/_mtchuente/police/ws.php"/>
+</catalog>
