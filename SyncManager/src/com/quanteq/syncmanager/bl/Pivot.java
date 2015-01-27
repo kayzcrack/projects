@@ -78,5 +78,10 @@ public class Pivot {
            return false;
        }
     }
+
+    public ResultSet flagSuspect(String suspectID)throws SQLException {
+        boolean flagRecord = dao.flagRecord(suspectID);
+        return null;
+    }
         
 }

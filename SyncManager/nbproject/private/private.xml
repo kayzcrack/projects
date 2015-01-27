@@ -5,11 +5,10 @@
         <group>
             <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/controller/SyncManager.java</file>
             <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/bl/Pivot.java</file>
+            <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/util/JavaNetURLRESTFulClient.java</file>
             <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/dao/DAO.java</file>
             <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/model/Suspect.java</file>
             <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/model/Case.java</file>
-            <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/util/TestService.java</file>
-            <file>file:/home/voti/NetBeansProjects/SyncManager/src/com/quanteq/syncmanager/util/ApacheHttpClientPost.java</file>
         </group>
     </open-files>
 </project-private>

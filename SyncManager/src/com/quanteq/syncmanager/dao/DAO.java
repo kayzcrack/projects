@@ -24,6 +24,7 @@ public class DAO {
     private final String GET_SUSPECT_CASE = "{call getCase(?)}";
     private final String GET_ALL_CASES = "{call getAllCases()}";
     private final String GET_SUSPECT_CASES = "{call getCases(?)}";
+    private final String FLAG_SUSPECT = "{call flagSyncedRecord(?)}";
     
     ResultSet rs;
     CallableStatement cs;
@@ -88,6 +89,16 @@ public class DAO {
         cs.setString(1, string);
         rs = cs.executeQuery();
         return rs;
+    }
+
+    public boolean flagRecord(String suspectID)throws SQLException {
+        boolean check = false;
+        conn = MysqlConnection.getConnection();
+        cs = conn.prepareCall(FLAG_SUSPECT);
+        cs.setString(1, suspectID);
+        rs = cs.executeQuery();
+        return false;
+        
     }
     
 }

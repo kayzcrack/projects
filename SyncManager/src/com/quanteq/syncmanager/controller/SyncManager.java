@@ -17,6 +17,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class SyncManager {
     static int SEED = 1;
     static int MAX_DELAY = 21600000;
     static boolean SHOULD_CONTINUE = false;
+    static boolean CHECK_ADD_SUSPECT = true;
     private static final String targetURL = "http://sdg.quanteq.com/~mtchuente/police_v8/ws.php";
 
     public static void main(String[] args) {
@@ -41,10 +43,10 @@ public class SyncManager {
     }
 
     public static void syncRecords() {
-
+       // SHOULD_CONTINUE = false;
         List<Suspect> unsyncedRecords = new ArrayList();
         boolean newRecordsExist = false;
-        final int BATCH_SIZE = 10;
+        final int BATCH_SIZE = 5;
         int count = 0;
 
         String suspectID;
@@ -65,6 +67,7 @@ public class SyncManager {
 
         try {
             newRecordsExist = new Pivot().checkUnflaggedRecords();
+            SHOULD_CONTINUE = false;
         } catch (SQLException ex) {
             // print error here
             System.out.println(ex);
@@ -75,6 +78,7 @@ public class SyncManager {
         if (newRecordsExist) {
             System.out.println("Found unsynchronized  records");
             SHOULD_CONTINUE = false;
+            SEED = 1;
             try {
                 System.out.println("Fetching unsynchronized records in batches of " + BATCH_SIZE);
                 unsyncedRecords = new Pivot().fetchUnflaggedRecords(BATCH_SIZE);
@@ -98,7 +102,7 @@ public class SyncManager {
 
                 // should loop through list here
                 for (Suspect suspect : unsyncedRecords) {
-                 //   System.out.println(suspects);
+                    //   System.out.println(suspects);
                     String addSuspect = "addSuspect";
                     suspectID = suspect.getID();
                     fullName = suspect.getFullName();
@@ -108,34 +112,57 @@ public class SyncManager {
                     dateEnrolled = suspect.getDateEnrolled();
                     enroller = suspect.getEnroller();
                     genderID = suspect.getGenderID();
+
                     // call a service here to send to ODB
-                    try{
-                    addSuspect(addSuspect,suspectID,fullName,age,enroller,genderID);
+                    try {
+                        addSuspect(addSuspect, suspectID, fullName, age, enroller, genderID);
+                        SHOULD_CONTINUE = false;
                         System.out.println("Suspect personal data sent to online database.");
-                    }catch(Exception ex){
-                        ex.printStackTrace();
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                        SHOULD_CONTINUE = true;
+                        goToSleep(computeSleepTime());
                     }
 
                     //  System.out.println(suspects.getCaseList());
                     for (Case suspectCase : suspect.getCaseList()) {
-                        // System.out.println("This is the case: " + cases);
                         String addCase = "addCase";
-                        caseID = suspectCase.getSuspectID();
+                        suspectID = suspectCase.getSuspectID();
                         crime = suspectCase.getCrime();
                         entryNumber = suspectCase.getEntryNumber();
                         dateReported = suspectCase.getDateReported();
                         crimeDate = suspectCase.getCrime_Date();
+
                         // call a service here to send to ODB
-                         try {
-                            addSuspect(addCase, caseID, crime, entryNumber, dateReported);
+                        try {
+                            addCase(addCase, suspectID, entryNumber, crime, crimeDate);
+                            SHOULD_CONTINUE = false;
+                            System.out.println(SHOULD_CONTINUE);
                             System.out.println("Suspect case(s)  sent to online database.");
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            System.out.println(ex);
+                            SHOULD_CONTINUE = true;
+                            goToSleep(computeSleepTime());
+                        }
+                    }
+                    // call procedure to flag records as sync in local database
+                    for (Suspect suspectToFlag : unsyncedRecords) {
+                        try {
+                            suspectID = suspectToFlag.getID();
+                            ResultSet flagSuspect = new Pivot().flagSuspect(suspectID);
+                            SHOULD_CONTINUE = false;
+
+                            //  System.out.println("Suspect " + suspectID + " flagged in database");
+                        } catch (SQLException ex) {
+                            System.out.println(ex);
+                            SHOULD_CONTINUE = true;
+                            System.out.println("Going to sleep...");
+                            goToSleep(computeSleepTime());
                         }
                     }
 
 //                    System.out.println("FullName: " + fullName);
-//                   System.out.println("SuspectID: " + suspectID);
+//                    System.out.println("SuspectID: " + suspectID);
 //                    System.out.println("Group: " + group);
 //                    System.out.println("PhoneNumber: " + phoneNumber);
 //                    System.out.println("Age: " + age);
@@ -149,9 +176,10 @@ public class SyncManager {
 //                    System.out.println("DateReported: " + dateReported);
 //                    System.out.println("CrimeDate: " + crimeDate);
 //                    System.out.println("\n");
-
                 }
 
+                // call syncRecords to continue process
+                syncRecords();
                 SHOULD_CONTINUE = false;
             } else {
                 System.out.printf("No network connection, retrying after " + SEED + "  seconds");
@@ -164,9 +192,11 @@ public class SyncManager {
         } else {
             System.out.println("No new record found");
             System.out.println("Checking again after  " + SEED + "  seconds");
-            SHOULD_CONTINUE = true;
+            SHOULD_CONTINUE = false;
             System.out.println("\n");
-            goToSleep(computeSleepTime());
+            // added this for some little trick, couldn't find my way around the stack overflow error haha.
+            SEED = SEED + 1;
+            goToSleep(SEED);
 
         }
     }
@@ -216,8 +246,8 @@ public class SyncManager {
         return SEED;
     }
 
-    public static void addSuspect(String operation, String suspectID, String fullName, 
-            int age,  String enroller, String gender) {
+    public static void addSuspect(String operation, String suspectID, String fullName,
+            int age, String enroller, String gender) throws IOException {
         // code to call web service for saving data.
         try {
 
@@ -230,7 +260,7 @@ public class SyncManager {
             httpConnection.setDoInput(true);
 
             String params = "op=" + operation + "&suspectID=" + suspectID + "&fullName=" + fullName
-                     + "&age" + age
+                    + "&age" + age
                     + "&userName=" + enroller + "&gender=" + gender;
 
             OutputStreamWriter wr = new OutputStreamWriter(httpConnection.getOutputStream());
@@ -246,26 +276,26 @@ public class SyncManager {
                     (httpConnection.getInputStream())));
 
             String output;
-            System.out.println("Output from Server:\n");
+            // System.out.println("Output from Server:\n");
             while ((output = responseBuffer.readLine()) != null) {
-                System.out.println(output);
+                //  System.out.println(output);
             }
 
             httpConnection.disconnect();
 
         } catch (MalformedURLException e) {
-
+            CHECK_ADD_SUSPECT = false;
             e.printStackTrace();
 
         } catch (IOException e) {
-
+            CHECK_ADD_SUSPECT = false;
             e.printStackTrace();
 
         }
     }
-    
-    public static void addCase(String operation,String suspectID,int entryNo,String crime,Date date){
-                try {
+
+    public static void addCase(String operation, String suspectID, int entryNo, String crime, Date date) throws IOException {
+        try {
 
             URL targetUrl = new URL(targetURL);
 
@@ -276,8 +306,7 @@ public class SyncManager {
             httpConnection.setDoInput(true);
 
             String params = "op=" + operation + "&suspectID=" + suspectID + "&entryNo=" + entryNo
-                     + "&crime" + crime + "&date=" + date;
-                    
+                    + "&crime=" + crime + "&date=" + date;
 
             OutputStreamWriter wr = new OutputStreamWriter(httpConnection.getOutputStream());
             wr.write(params);
@@ -292,9 +321,9 @@ public class SyncManager {
                     (httpConnection.getInputStream())));
 
             String output;
-            System.out.println("Output from Server:\n");
+            //  System.out.println("Output from Server:\n");
             while ((output = responseBuffer.readLine()) != null) {
-                System.out.println(output);
+                //  System.out.println(output);
             }
 
             httpConnection.disconnect();
