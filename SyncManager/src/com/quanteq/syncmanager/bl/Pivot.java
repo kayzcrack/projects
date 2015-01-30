@@ -7,6 +7,7 @@
 package com.quanteq.syncmanager.bl;
 
 import com.quanteq.syncmanager.dao.DAO;
+import com.quanteq.syncmanager.model.Biometric;
 import com.quanteq.syncmanager.model.Case;
 import com.quanteq.syncmanager.model.Suspect;
 import java.sql.CallableStatement;
@@ -21,7 +22,7 @@ import java.util.List;
  * @author voti
  */
 public class Pivot {
-    ResultSet rs,rs1;
+    ResultSet rs,rs1,rs2;
     CallableStatement cs;
     Connection conn;
     DAO dao = new DAO();
@@ -53,16 +54,36 @@ public class Pivot {
                     c.setEntryNumber(rs1.getInt("EntryNumber"));
                     c.setCrime(rs1.getString("Crime"));
                     c.setCrime_Date(rs1.getDate("CrimeDate"));
+                    c.setDateReported(rs1.getDate("DateReported"));
+                  //  System.out.println(rs1.getDate(4));
+                   // c.setDateReported(rs1.getDate("DateReported"));
                     caseList.add(c);
 
 //                    System.out.println(rs1.getString("SuspectID"));
 //                    System.out.println(rs1.getString("EntryNumber"));
 //                    System.out.println(rs1.getString("Crime"));
-//                    System.out.println(rs1.getString("CrimeDate"));
+//                   System.out.println("ffffffffffffffffff:" + rs1.getString("DateReported"));
 //                    System.out.println(" SuspectID  " +  rs.getString("ID") + " Name  " + rs.getString("FullName") + " Case  " +
 //                            rs1.getString("Crime"));
                }
+                
+                List<Biometric> biometricList = new ArrayList();
+                rs2 = dao.getBiometric(rs.getString("ID"));
+                while(rs2.next()){
+                    Biometric b = new Biometric();
+                    b.setId(rs2.getString("ID"));
+                    b.setTypeid(rs2.getString("TypeID"));
+                    b.setSubtypeid(rs2.getString("SubTypeID"));
+                    b.setData(rs2.getString("data"));
+                    biometricList.add(b);
+                    
+                  //  System.out.println(rs2.getString("ID"));
+                  //  System.out.println(rs2.getString("TypeID"));
+                  //  System.out.println(biometricList);
+                   // System.out.println(rs2.getString("data"));
+                }
                  
+                 s.setBiometricList(biometricList);
                  s.setCaseList(caseList);
                  suspectList.add(s);
 

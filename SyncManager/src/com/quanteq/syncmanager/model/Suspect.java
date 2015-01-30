@@ -6,8 +6,6 @@
 
 package com.quanteq.syncmanager.model;
 
-import com.quanteq.syncmanager.bl.Pivot;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -25,9 +23,11 @@ public class Suspect {
     String Enroller;
     String group;
     private Date DateEnrolled;
+  //  private Date DateEnrolled;
     private int sync;
     private int Age;
     private List<Case> caseList;
+    private List<Biometric> biometricList;
     
     
     
@@ -112,5 +112,13 @@ public class Suspect {
 
     public void setCaseList(List<Case> caseList) {
         this.caseList = caseList;
+    }
+
+    public List<Biometric> getBiometricList() {
+        return biometricList;
+    }
+
+    public void setBiometricList(List<Biometric> biometricList) {
+        this.biometricList = biometricList;
     }
 }

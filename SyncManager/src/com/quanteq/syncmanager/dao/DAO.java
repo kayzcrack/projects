@@ -20,11 +20,12 @@ import java.util.logging.Logger;
  */
 public class DAO {
     private final String CHECK_UNSYNCED_RECORDS = "{call checkRecordsForSync()}";
-    private final String FETCH_UNSYNCED_RECORDS = "{call getSuspectForSync(?)}";
+    private final String FETCH_UNSYNCED_RECORDS = "{call getRecordsForSync(?)}";
     private final String GET_SUSPECT_CASE = "{call getCase(?)}";
     private final String GET_ALL_CASES = "{call getAllCases()}";
-    private final String GET_SUSPECT_CASES = "{call getCases(?)}";
+    private final String GET_SUSPECT_CASES = "{call getCaseForSync(?)}";
     private final String FLAG_SUSPECT = "{call flagSyncedRecord(?)}";
+    private final String GET_BIOMETRIC = "{call getBiometrics(?)}";
     
     ResultSet rs;
     CallableStatement cs;
@@ -99,6 +100,14 @@ public class DAO {
         rs = cs.executeQuery();
         return false;
         
+    }
+
+    public ResultSet getBiometric(String string) throws SQLException {
+        conn = MysqlConnection.getConnection();
+        cs = conn.prepareCall(GET_BIOMETRIC);
+        cs.setString(1, string);
+        rs = cs.executeQuery();
+        return rs;
     }
     
 }

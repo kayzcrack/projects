@@ -1,0 +1,1 @@
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: PROCEDURE policelockupdiary_online.checkRecordsForSync1 does not exist

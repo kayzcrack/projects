@@ -16,19 +16,15 @@ import java.util.logging.Logger;
  *
  * @author voti
  */
-public class MysqlConnection {
+public class MysqlConnection{
     private static Connection mysqlConn;
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException {
         if (mysqlConn == null) {
-            try {
-                String host = "jdbc:mysql://172.16.3.20:3306/policelockupdiary_online";
+                String host = "jdbc:mysql://172.16.3.20:3306/policelockupdiary";
                 String uname = "sdg";
                 String password = "sdg2009";
-                mysqlConn = DriverManager.getConnection(host, uname, password);
-            } catch (SQLException ex) {
-                Logger.getLogger(MysqlConnection.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                mysqlConn = DriverManager.getConnection(host, uname, password);   
         }
         return mysqlConn;
     }
